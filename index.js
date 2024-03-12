@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });
 
-app.post("/", (req, res) => {
+app.post("/signup", (req, res) => {
   const user = new User(req.body);
   User.find({ username: user.username })
     .then((result) => {
@@ -50,8 +50,30 @@ app.post("/", (req, res) => {
     });
 });
 
-app.get("/customer", (req, res) => {
+app.post("/login", (req, res) => {
+  const user = new User(req.body);
+  User.find({ username: user.username })
+    .then((result) => {
+      if (result.length == 0) {
+        console.log("doesn't exist");
+      } else if (user.password != result[0].password) {
+        console.log("incorrect password");
+      } else {
+        res.redirect("/?user=" + encodeURIComponent(user.username));
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.redirect("/");
+    });
+});
+
+app.get("/custlog", (req, res) => {
   res.render("customer_login", { title: "Customer" });
+});
+
+app.get("/custsign", (req, res) => {
+  res.render("customer_signup", { title: "Customer" });
 });
 
 app.get("/staff", (req, res) => {
