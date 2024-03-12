@@ -2,10 +2,15 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const User = require("./models/user");
+
 dotenv.config();
 const app = express();
 
-app.listen(process.env.PORT);
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then((result) => app.listen(process.env.PORT))
+  .catch((err) => console.log(err));
 
 // register view engines
 app.engine("ejs", require("ejs").renderFile);
@@ -20,6 +25,29 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
+});
+
+app.post("/", (req, res) => {
+  const user = new User(req.body);
+  User.find({ username: user.username })
+    .then((result) => {
+      if (result.length != 0) {
+        console.log("already exists");
+      } else {
+        user
+          .save()
+          .then((result) => {
+            res.redirect("/?user=" + encodeURIComponent(user.username));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.redirect("/");
+    });
 });
 
 app.get("/customer", (req, res) => {

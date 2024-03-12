@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <%- include('./partials/head.ejs') %>
-  <body></body>
+  <body>
+    <div class="create-url">
+      <form action="/" method="POST">
+        <label for="username">Username:</label>
+        <input name="username" id="username" required />
+        <label for="password">Pass:</label>
+        <input id="password" type="text" name="password" required />
+        <button>Sign Up</button>
+      </form>
+    </div>
+  </body>
 </html>
