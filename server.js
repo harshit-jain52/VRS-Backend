@@ -5,6 +5,11 @@ require("dotenv").config();
 const cors = require("cors");
 
 const customerRoutes = require("./routes/customers");
+const orderRoutes = require("./routes/orders");
+const videoRoutes = require("./routes/videos");
+const staffRoutes = require("./routes/staffs");
+const managerRoutes = require("./routes/managers");
+
 const app = express();
 
 // Connect to database
@@ -30,3 +35,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/customers", customerRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/videos", videoRoutes);
+app.use("/api/staffs", staffRoutes);
+app.use("/api/managers", managerRoutes);

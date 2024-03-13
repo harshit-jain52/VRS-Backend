@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const createCustomer = async (req, res) => {
   try {
     const customer = await Customer.create({ ...req.body });
-    res.status(200).json(workout);
+    res.status(200).json(customer);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
