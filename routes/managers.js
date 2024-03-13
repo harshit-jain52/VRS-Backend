@@ -4,6 +4,7 @@ const {
   createManager,
   getManagers,
   getManager,
+  getManagerByUsername,
   deleteManager,
   updateManager,
 } = require("../controllers/managerController");
@@ -14,8 +15,11 @@ router.post("/", createManager);
 // GET all managers
 router.get("/", getManagers);
 
-// GET a manager
-router.get("/:id", getManager);
+// GET a manager by ID
+router.get("/:id", getManager); //request URL: /managers/<_id>
+
+// GET a manager by username
+router.get("/:name", getManagerByUsername); // request URL: /managers/?user=<username>
 
 // DELETE a manager
 router.delete("/:id", deleteManager);

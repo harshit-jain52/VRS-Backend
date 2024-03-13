@@ -18,7 +18,7 @@ const getCustomers = async (req, res) => {
   res.status(200).json(customers);
 };
 
-// GET a customer
+// GET a customer by ID
 const getCustomer = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -26,6 +26,18 @@ const getCustomer = async (req, res) => {
   }
 
   const customer = await Customer.findById(id);
+  if (!customer) {
+    return res.status(400).json({ error: "No such customer found" });
+  }
+
+  res.status(200).json(customer);
+};
+
+// GET a customer by username
+const getCustomerByUsername = async (req, res) => {
+  const username = req.param.user;
+
+  const customer = await Customer.findOne({ username: username });
   if (!customer) {
     return res.status(400).json({ error: "No such customer found" });
   }
@@ -71,6 +83,7 @@ module.exports = {
   createCustomer,
   getCustomers,
   getCustomer,
+  getCustomerByUsername,
   deleteCustomer,
   updateCustomer,
 };

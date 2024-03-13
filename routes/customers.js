@@ -4,6 +4,7 @@ const {
   createCustomer,
   getCustomers,
   getCustomer,
+  getCustomerByUsername,
   deleteCustomer,
   updateCustomer,
 } = require("../controllers/customerController");
@@ -14,8 +15,11 @@ router.post("/", createCustomer);
 // GET all customers
 router.get("/", getCustomers);
 
-// GET a customer
-router.get("/:id", getCustomer);
+// GET a customer by ID
+router.get("/:id", getCustomer); //request URL: /customers/<_id>
+
+// GET a customer by username
+router.get("/:name", getCustomerByUsername); // request URL: /customers/?user=<username>
 
 // DELETE a customer
 router.delete("/:id", deleteCustomer);

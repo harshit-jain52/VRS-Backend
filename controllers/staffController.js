@@ -18,7 +18,7 @@ const getStaffs = async (req, res) => {
   res.status(200).json(staffs);
 };
 
-// GET a staff
+// GET a staff by ID
 const getStaff = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -26,6 +26,18 @@ const getStaff = async (req, res) => {
   }
 
   const staff = await Staff.findById(id);
+  if (!staff) {
+    return res.status(400).json({ error: "No such staff found" });
+  }
+
+  res.status(200).json(staff);
+};
+
+// GET a staff by username
+const getStaffByUsername = async (req, res) => {
+  const username = req.param.user;
+
+  const staff = await Staff.findOne({ username: username });
   if (!staff) {
     return res.status(400).json({ error: "No such staff found" });
   }
@@ -68,6 +80,7 @@ module.exports = {
   createStaff,
   getStaffs,
   getStaff,
+  getStaffByUsername,
   deleteStaff,
   updateStaff,
 };

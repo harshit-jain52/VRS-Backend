@@ -18,7 +18,7 @@ const getManagers = async (req, res) => {
   res.status(200).json(managers);
 };
 
-// GET a manager
+// GET a manager by ID
 const getManager = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -26,6 +26,18 @@ const getManager = async (req, res) => {
   }
 
   const manager = await Manager.findById(id);
+  if (!manager) {
+    return res.status(400).json({ error: "No such manager found" });
+  }
+
+  res.status(200).json(manager);
+};
+
+// GET a manager by username
+const getManagerByUsername = async (req, res) => {
+  const username = req.param.user;
+
+  const manager = await Manager.findOne({ username: username });
   if (!manager) {
     return res.status(400).json({ error: "No such manager found" });
   }
@@ -68,6 +80,7 @@ module.exports = {
   createManager,
   getManagers,
   getManager,
+  getManagerByUsername,
   deleteManager,
   updateManager,
 };
