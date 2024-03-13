@@ -1,48 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const Customer = require("../models/customer");
+const {
+  createCustomer,
+  getCustomers,
+  getCustomer,
+  deleteCustomer,
+  updateCustomer,
+} = require("../controllers/customerController");
 
-router.get("/", () => {});
+// POST a new customer
+router.post("/", createCustomer);
 
-router.post("/signup", (req, res) => {
-  const customer = new Customer(req.body);
-  Customer.find({ username: customer.username })
-    .then((result) => {
-      if (result.length != 0) {
-        console.log("already exists");
-      } else {
-        customer
-          .save()
-          .then((result) => {
-            res.redirect("/?customer=" + encodeURIComponent(customer.username));
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.redirect("/");
-    });
-});
+// GET all customers
+router.get("/", getCustomers);
 
-router.post("/login", (req, res) => {
-  const customer = new Customer(req.body);
-  Customer.find({ username: customer.username })
-    .then((result) => {
-      if (result.length == 0) {
-        console.log("doesn't exist");
-      } else if (customer.password != result[0].password) {
-        console.log("incorrect password");
-      } else {
-        res.redirect("/?customer=" + encodeURIComponent(customer.username));
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.redirect("/");
-    });
-});
+// GET a customer
+router.get("/:id", getCustomer);
+
+// DELETE a customer
+router.delete("/:id", deleteCustomer);
+
+// UPDATE a customer
+router.patch("/:id", updateCustomer);
 
 module.exports = router;

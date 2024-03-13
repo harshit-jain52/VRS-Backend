@@ -11,6 +11,17 @@ const customerSchema = new Schema({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  orders: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Order",
+  },
+  address: {
+    type: String,
+  },
 });
 
 const Customer = mongoose.model("Customer", customerSchema);

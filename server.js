@@ -10,42 +10,23 @@ const app = express();
 // Connect to database
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then((result) => app.listen(process.env.PORT))
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log("connected to db & listening to port", process.env.PORT);
+    });
+  })
   .catch((err) => console.log(err));
 
 // Global Middleware
 app.use(cors());
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
 
-// register view engines
-app.engine("ejs", require("ejs").renderFile);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// middleware & static files
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+// Middleware & static files
+// app.use(express.urlencoded({ extended: true }));
 
 // Routes
-
 app.use("/api/customers", customerRoutes);
-
-app.get("/", (req, res) => {
-  res.render("home", { title: "Home" });
-});
-
-app.get("/custlog", (req, res) => {
-  res.render("customer_login", { title: "Customer" });
-});
-
-app.get("/custsign", (req, res) => {
-  res.render("customer_signup", { title: "Customer" });
-});
-
-app.get("/staff", (req, res) => {
-  res.render("staff_login", { title: "Staff" });
-});
-
-app.get("/manager", (req, res) => {
-  res.render("manager_login", { title: "Manager" });
-});
