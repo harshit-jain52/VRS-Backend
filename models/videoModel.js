@@ -28,16 +28,7 @@ const videoSchema = new Schema({
     type: String,
   },
   cast: {
-    type: [
-      {
-        name: {
-          type: String,
-        },
-        name_id: {
-          type: String,
-        },
-      },
-    ],
+    type: [{ name: String, name_id: String }],
   },
   rented: {
     type: [mongoose.Schema.Types.ObjectId],
