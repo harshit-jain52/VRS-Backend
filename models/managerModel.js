@@ -15,6 +15,14 @@ const managerSchema = new Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
 });
 
 const Manager = mongoose.model("Manager", managerSchema);

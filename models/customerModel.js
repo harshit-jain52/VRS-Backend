@@ -15,6 +15,14 @@ const customerSchema = new Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
   orders: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Order",
