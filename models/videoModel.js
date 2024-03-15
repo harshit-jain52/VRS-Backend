@@ -19,7 +19,7 @@ const videoSchema = new Schema({
     type: [String],
   },
   rating: {
-    type: String,
+    type: Number,
   },
   summary_text: {
     type: String,
@@ -35,6 +35,14 @@ const videoSchema = new Schema({
     ref: "Order",
   },
   stock: {
+    type: Number,
+    required: true,
+  },
+  buy_price: {
+    type: Number,
+    required: true,
+  },
+  rent_price: {
     type: Number,
     required: true,
   },
