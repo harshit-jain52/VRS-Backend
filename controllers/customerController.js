@@ -7,7 +7,16 @@ const createCustomer = async (req, res) => {
     const customer = await Customer.create({ ...req.body });
     res.status(200).json(customer);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.name === "ValidationError") {
+      let fields = {};
+
+      Object.keys(error.errors).forEach((key) => {
+        fields[key] = error.errors[key].message;
+      });
+
+      return res.status(400).send(fields);
+    }
+    res.status(500).json({ error: error.message });
   }
 };
 

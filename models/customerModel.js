@@ -4,24 +4,23 @@ const Schema = mongoose.Schema;
 const customerSchema = new Schema({
   username: {
     type: String,
-    unique: true,
-    required: true,
+    required: [true, "Username is required"],
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Password is required"],
   },
   name: {
     type: String,
-    required: true,
+    required: [true, "Name is required"],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, "Email is required"],
   },
   phone: {
     type: String,
-    required: true,
+    required: [true, "Phone number is required"],
   },
   orders: {
     type: [mongoose.Schema.Types.ObjectId],
