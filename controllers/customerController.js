@@ -44,7 +44,7 @@ const getCustomer = async (req, res) => {
 
 // GET a customer by username
 const getCustomerByUsername = async (req, res) => {
-  const username = req.param.user;
+  const username = req.query.user;
 
   const customer = await Customer.findOne({ username: username });
   if (!customer) {

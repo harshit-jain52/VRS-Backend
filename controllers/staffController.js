@@ -35,7 +35,7 @@ const getStaff = async (req, res) => {
 
 // GET a staff by username
 const getStaffByUsername = async (req, res) => {
-  const username = req.param.user;
+  const username = req.query.user;
 
   const staff = await Staff.findOne({ username: username });
   if (!staff) {

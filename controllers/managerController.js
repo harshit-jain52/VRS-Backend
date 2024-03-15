@@ -35,7 +35,7 @@ const getManager = async (req, res) => {
 
 // GET a manager by username
 const getManagerByUsername = async (req, res) => {
-  const username = req.param.user;
+  const username = req.query.user;
 
   const manager = await Manager.findOne({ username: username });
   if (!manager) {
