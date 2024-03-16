@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createCustomer,
+  signUpCustomer,
+  logInCustomer,
   getCustomers,
   getCustomer,
   getCustomerByUsername,
@@ -9,8 +10,11 @@ const {
   updateCustomer,
 } = require("../controllers/customerController");
 
-// POST a new customer
-router.post("/", createCustomer);
+// Sign Up a new customer
+router.post("/signup", signUpCustomer);
+
+// Log In a customer
+router.post("/login", logInCustomer);
 
 // GET all customers
 router.get("/", getCustomers);

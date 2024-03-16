@@ -1,22 +1,64 @@
 const Customer = require("../models/customerModel");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
-// POST a new customer
-const createCustomer = async (req, res) => {
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2d" });
+};
+
+// Sign Up Customer
+const signUpCustomer = async (req, res) => {
+  const { username, password, name, email, phone, address } = req.body;
+
   try {
-    const customer = await Customer.create({ ...req.body });
-    res.status(200).json(customer);
+    const customer = await Customer.signUp(
+      username,
+      password,
+      name,
+      email,
+      phone,
+      address
+    );
+
+    // create token
+    const token = createToken(customer._id);
+
+    res.status(200).json({
+      username,
+      token,
+      name,
+      email,
+      phone,
+      address,
+      orders: customer.orders,
+    });
   } catch (error) {
-    if (error.name === "ValidationError") {
-      let fields = {};
+    res.status(400).json({ error: error.message });
+  }
+};
 
-      Object.keys(error.errors).forEach((key) => {
-        fields[key] = error.errors[key].message;
-      });
+// Log In Customer
+const logInCustomer = async (req, res) => {
+  const { username, password } = req.body;
 
-      return res.status(400).send(fields);
-    }
-    res.status(500).json({ error: error.message });
+  try {
+    const customer = await Customer.logIn(username, password);
+
+    // create token
+    const token = createToken(customer._id);
+
+    res.status(200).json({
+      username,
+      token,
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      address: customer.address,
+      orders: customer.orders,
+      _id: customer._id,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -89,7 +131,8 @@ const updateCustomer = async (req, res) => {
 };
 
 module.exports = {
-  createCustomer,
+  signUpCustomer,
+  logInCustomer,
   getCustomers,
   getCustomer,
   getCustomerByUsername,
