@@ -50,12 +50,12 @@ const logInManager = async (req, res) => {
 
 // GET a manager by ID
 const getManager = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such manager found" });
   }
 
-  const manager = await Manager.findById(id);
+  const manager = await Manager.findById(_id);
   if (!manager) {
     return res.status(400).json({ error: "No such manager found" });
   }
@@ -65,12 +65,12 @@ const getManager = async (req, res) => {
 
 // DELETE a manager
 const deleteManager = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such manager found" });
   }
 
-  const manager = await Manager.findOneAndDelete({ _id: id });
+  const manager = await Manager.findOneAndDelete({ _id: _id });
   if (!manager) {
     return res.status(400).json({ error: "No such manager found" });
   }
@@ -80,12 +80,12 @@ const deleteManager = async (req, res) => {
 
 // UPDATE a manager
 const updateManager = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such manager found" });
   }
 
-  const manager = await Manager.findOneAndUpdate({ _id: id }, { ...req.body });
+  const manager = await Manager.findOneAndUpdate({ _id: _id }, { ...req.body });
 
   if (!manager) {
     return res.status(400).json({ error: "No such manager found" });
