@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
   {
-    video: {
-      type: mongoose.Schema.Types.ObjectId,
+    videos: {
+      type: [{ videoId: mongoose.Schema.Types.ObjectId, quantity: Number }],
       ref: "Video",
       required: true,
     },
@@ -12,6 +12,11 @@ const orderSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "delivered", "returned", "cancelled"],
+      default: "pending",
     },
   },
   { timestamps: true }

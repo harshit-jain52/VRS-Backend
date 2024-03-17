@@ -1,4 +1,5 @@
 const Customer = require("../models/customerModel");
+const Order = require("../models/orderModel");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
@@ -62,13 +63,6 @@ const logInCustomer = async (req, res) => {
   }
 };
 
-// GET all customers
-const getCustomers = async (req, res) => {
-  const customers = await Customer.find({});
-
-  res.status(200).json(customers);
-};
-
 // GET a customer by ID
 const getCustomer = async (req, res) => {
   const { id } = req.params;
@@ -84,26 +78,14 @@ const getCustomer = async (req, res) => {
   res.status(200).json(customer);
 };
 
-// GET a customer by username
-const getCustomerByUsername = async (req, res) => {
-  const username = req.query.user;
-
-  const customer = await Customer.findOne({ username: username });
-  if (!customer) {
-    return res.status(400).json({ error: "No such customer found" });
-  }
-
-  res.status(200).json(customer);
-};
-
 // DELETE a customer
 const deleteCustomer = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such customer found" });
   }
 
-  const customer = await Customer.findOneAndDelete({ _id: id });
+  const customer = await Customer.findOneAndDelete({ _id: _id });
   if (!customer) {
     return res.status(400).json({ error: "No such customer found" });
   }
@@ -113,13 +95,13 @@ const deleteCustomer = async (req, res) => {
 
 // UPDATE a customer
 const updateCustomer = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such customer found" });
   }
 
   const customer = await Customer.findOneAndUpdate(
-    { _id: id },
+    { _id: _id },
     { ...req.body }
   );
 
@@ -130,12 +112,42 @@ const updateCustomer = async (req, res) => {
   res.status(200).json(customer); // customer before update
 };
 
+// POST a new order
+const newOrder = async (req, res) => {
+  const { _id } = req.user;
+  const { cart } = req.body;
+  try {
+    const order = await Order.create({ videos: cart, customer: _id });
+    const customer = await Customer.findById(_id);
+    customer.orders.push(order._id);
+    await customer.save();
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// GET all orders
+const getOrders = async (req, res) => {
+  const { _id } = req.user;
+  const customer = await Customer.findById(_id).populate({
+    path: "orders",
+    populate: {
+      path: "videos.videoId",
+      model: "Video",
+    },
+    select: "videos status createdAt",
+  });
+
+  res.status(200).json(customer.orders);
+};
+
 module.exports = {
   signUpCustomer,
   logInCustomer,
-  getCustomers,
+  newOrder,
+  getOrders,
   getCustomer,
-  getCustomerByUsername,
   deleteCustomer,
   updateCustomer,
 };

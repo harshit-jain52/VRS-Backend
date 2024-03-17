@@ -3,12 +3,13 @@ const router = express.Router();
 const {
   signUpCustomer,
   logInCustomer,
-  getCustomers,
+  newOrder,
+  getOrders,
   getCustomer,
-  getCustomerByUsername,
   deleteCustomer,
   updateCustomer,
 } = require("../controllers/customerController");
+const customerAuth = require("../middleware/customerAuth");
 
 // Sign Up a new customer
 router.post("/signup", signUpCustomer);
@@ -16,19 +17,11 @@ router.post("/signup", signUpCustomer);
 // Log In a customer
 router.post("/login", logInCustomer);
 
-// GET all customers
-router.get("/", getCustomers);
-
-// GET a customer by username
-router.get("/query", getCustomerByUsername); // request URL: /customers/query?user=<username>
-
-// GET a customer by ID
-router.get("/:id", getCustomer); //request URL: /customers/<_id>
-
-// DELETE a customer
-router.delete("/:id", deleteCustomer);
-
-// UPDATE a customer
-router.patch("/:id", updateCustomer);
+router.use(customerAuth);
+router.get("/profile", getCustomer);
+router.patch("/editprofile", updateCustomer);
+router.post("/neworder", newOrder);
+router.get("/myorders", getOrders);
+router.delete("/deleteaccount", deleteCustomer);
 
 module.exports = router;
