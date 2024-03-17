@@ -1,5 +1,6 @@
 const Customer = require("../models/customerModel");
 const Order = require("../models/orderModel");
+const Video = require("../models/videoModel");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
@@ -27,11 +28,6 @@ const signUpCustomer = async (req, res) => {
     res.status(200).json({
       username,
       token,
-      name,
-      email,
-      phone,
-      address,
-      orders: customer.orders,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -51,12 +47,6 @@ const logInCustomer = async (req, res) => {
     res.status(200).json({
       username,
       token,
-      name: customer.name,
-      email: customer.email,
-      phone: customer.phone,
-      address: customer.address,
-      orders: customer.orders,
-      _id: customer._id,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -65,12 +55,12 @@ const logInCustomer = async (req, res) => {
 
 // GET a customer by ID
 const getCustomer = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such customer found" });
   }
 
-  const customer = await Customer.findById(id);
+  const customer = await Customer.findById(_id);
   if (!customer) {
     return res.status(400).json({ error: "No such customer found" });
   }
@@ -117,10 +107,31 @@ const newOrder = async (req, res) => {
   const { _id } = req.user;
   const { cart } = req.body;
   try {
+    cart.forEach(async (item) => {
+      if (!mongoose.Types.ObjectId.isValid(item.videoId)) {
+        return res.status(400).json({ error: "No such video found" });
+      }
+      const video = await Video.findById(item.videoId);
+      if (!video) {
+        return res.status(400).json({ error: "No such video found" });
+      }
+
+      if (video.stock < item.quantity) {
+        return res.status(400).json({ error: "Not enough stock" });
+      }
+    });
+
     const order = await Order.create({ videos: cart, customer: _id });
     const customer = await Customer.findById(_id);
     customer.orders.push(order._id);
     await customer.save();
+    cart.forEach(async (item) => {
+      const video = Video.findOneAndUpdate(
+        { _id: item.videoId },
+        { $push: { rented: _id } },
+        { $inc: { stock: -item.quantity } }
+      );
+    });
     res.status(200).json(order);
   } catch (error) {
     res.status(400).json({ error: error.message });

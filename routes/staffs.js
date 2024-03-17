@@ -1,30 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createStaff,
-  getStaffs,
+  signUpStaff,
+  logInStaff,
   getStaff,
-  getStaffByUsername,
   deleteStaff,
   updateStaff,
+  changeOrderStatus,
+  changeVideoStock,
 } = require("../controllers/staffController");
+const staffAuth = require("../middleware/staffAuth");
 
-// POST a new staff
-router.post("/", createStaff);
+// Sign Up a new staff
+router.post("/signup", signUpStaff);
 
-// GET all staffs
-router.get("/", getStaffs);
+// Log In a staff
+router.post("/login", logInStaff);
 
-// GET a staff by username
-router.get("/query", getStaffByUsername); // request URL: /staffs/?user=<username>
-
-// GET a staff by ID
-router.get("/:id", getStaff); //request URL: /staffs/<_id>
-
-// DELETE a staff
-router.delete("/:id", deleteStaff);
-
-// UPDATE a staff
-router.patch("/:id", updateStaff);
+router.use(staffAuth);
+router.get("/profile", getStaff);
+router.patch("/editprofile", updateStaff);
+router.delete("/deleteaccount", deleteStaff);
+router.patch("/orderstatus", changeOrderStatus);
+router.patch("/stock", changeVideoStock);
 
 module.exports = router;

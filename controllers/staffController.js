@@ -1,43 +1,66 @@
 const Staff = require("../models/staffModel");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const Order = require("../models/orderModel");
+const Video = require("../models/videoModel");
 
-// POST a new staff
-const createStaff = async (req, res) => {
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2d" });
+};
+
+// Sign Up Staff
+const signUpStaff = async (req, res) => {
+  const { username, password, name, email, phone, address } = req.body;
+
   try {
-    const staff = await Staff.create({ ...req.body });
-    res.status(200).json(staff);
+    const staff = await Staff.signUp(
+      username,
+      password,
+      name,
+      email,
+      phone,
+      address
+    );
+
+    // create token
+    const token = createToken(staff._id);
+
+    res.status(200).json({
+      username,
+      token,
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// GET all staffs
-const getStaffs = async (req, res) => {
-  const staffs = await Staff.find({});
+// Log In Staff
+const logInStaff = async (req, res) => {
+  const { username, password } = req.body;
 
-  res.status(200).json(staffs);
+  try {
+    const staff = await Staff.logIn(username, password);
+
+    // create token
+    const token = createToken(staff._id);
+
+    res.status(200).json({
+      username,
+      token,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 // GET a staff by ID
 const getStaff = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { _id } = req.user;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such staff found" });
   }
 
-  const staff = await Staff.findById(id);
-  if (!staff) {
-    return res.status(400).json({ error: "No such staff found" });
-  }
-
-  res.status(200).json(staff);
-};
-
-// GET a staff by username
-const getStaffByUsername = async (req, res) => {
-  const username = req.query.user;
-
-  const staff = await Staff.findOne({ username: username });
+  const staff = await Staff.findById(_id);
   if (!staff) {
     return res.status(400).json({ error: "No such staff found" });
   }
@@ -47,12 +70,13 @@ const getStaffByUsername = async (req, res) => {
 
 // DELETE a staff
 const deleteStaff = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.user;
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "No such staff found" });
   }
 
-  const staff = await Staff.findOneAndDelete({ _id: id });
+  const staff = await Staff.findOneAndDelete({ _id: _id });
   if (!staff) {
     return res.status(400).json({ error: "No such staff found" });
   }
@@ -62,12 +86,12 @@ const deleteStaff = async (req, res) => {
 
 // UPDATE a staff
 const updateStaff = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.user;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "No such staff found" });
   }
 
-  const staff = await Staff.findOneAndUpdate({ _id: id }, { ...req.body });
+  const staff = await Staff.findOneAndUpdate({ _id: _id }, { ...req.body });
 
   if (!staff) {
     return res.status(400).json({ error: "No such staff found" });
@@ -76,11 +100,58 @@ const updateStaff = async (req, res) => {
   res.status(200).json(staff); // staff before update
 };
 
+// Change Order Status
+const changeOrderStatus = async (req, res) => {
+  const { orderID, status } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(orderID)) {
+    return res.status(400).json({ error: "No such order found" });
+  }
+
+  const order = await Order.findById(orderID);
+  if (!order) {
+    return res.status(400).json({ error: "No such order found" });
+  }
+  if (status === "returned") {
+    order.videos.forEach(async (vid) => {
+      const { videoId, quantity } = vid;
+      if (!mongoose.Types.ObjectId.isValid(videoID)) {
+        return res.status(400).json({ error: "No such video found" });
+      }
+      const video = await Video.findById(videoId);
+      const stock = video.stock + quantity;
+      await Video.findOneAndUpdate({ _id: videoId }, { stock: stock });
+    });
+  }
+  order.status = status;
+  await order.save();
+
+  res.status(200).json(order);
+};
+
+// Change Stock
+const changeVideoStock = async (req, res) => {
+  const { videoID, stock } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(videoID)) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  const video = await Video.findOneAndUpdate(
+    { _id: videoID },
+    { stock: stock }
+  );
+  if (!video) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  res.status(200).json(video);
+};
+
 module.exports = {
-  createStaff,
-  getStaffs,
+  signUpStaff,
+  logInStaff,
   getStaff,
-  getStaffByUsername,
-  deleteStaff,
   updateStaff,
+  deleteStaff,
+  changeOrderStatus,
+  changeVideoStock,
 };
