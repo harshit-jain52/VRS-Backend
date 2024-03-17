@@ -1,12 +1,8 @@
-const Staff = require("../models/staffModel");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
+const Staff = require("../models/staffModel");
 const Order = require("../models/orderModel");
 const Video = require("../models/videoModel");
-
-const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2d" });
-};
+const createToken = require("../helpers/createToken");
 
 // Sign Up Staff
 const signUpStaff = async (req, res) => {

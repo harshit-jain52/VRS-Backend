@@ -1,30 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createManager,
-  getManagers,
+  signUpManager,
+  logInManager,
   getManager,
-  getManagerByUsername,
   deleteManager,
   updateManager,
+  addVideo,
+  getAllOrders,
 } = require("../controllers/managerController");
+const managerAuth = require("../middleware/managerAuth");
 
-// POST a new manager
-router.post("/", createManager);
+// Sign Up a new manager
+router.post("/signup", signUpManager);
 
-// GET all managers
-router.get("/", getManagers);
+// Log In a manager
+router.post("/login", logInManager);
 
-// GET a manager by username
-router.get("/query", getManagerByUsername); // request URL: /managers/?user=<username>
-
-// GET a manager by ID
-router.get("/:id", getManager); //request URL: /managers/<_id>
-
-// DELETE a manager
-router.delete("/:id", deleteManager);
-
-// UPDATE a manager
-router.patch("/:id", updateManager);
+router.use(managerAuth);
+router.get("/profile", getManager);
+router.patch("/editprofile", updateManager);
+router.delete("/deleteaccount", deleteManager);
+router.post("/addvideo", addVideo);
+router.get("/allorders", getAllOrders);
 
 module.exports = router;
