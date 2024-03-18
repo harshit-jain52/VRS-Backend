@@ -20,10 +20,12 @@ const customerSchema = new Schema({
   email: {
     type: String,
     required: [true, "Email is required"],
+    unique: true,
   },
   phone: {
     type: String,
     required: [true, "Phone number is required"],
+    unique: true,
   },
   orders: {
     type: [mongoose.Schema.Types.ObjectId],
@@ -53,10 +55,18 @@ customerSchema.statics.signUp = async function (
   if (!validator.isEmail(email)) {
     throw new Error("Invalid email");
   }
+  exists = await this.findOne({ email });
+  if (exists) {
+    throw new Error("Email already in use");
+  }
 
   // validate phone
   if (!validator.isMobilePhone(phone)) {
     throw new Error("Invalid phone number");
+  }
+  exists = await this.findOne({ phone });
+  if (exists) {
+    throw new Error("Phone number already in use");
   }
 
   const salt = await bcrypt.genSalt(10);
