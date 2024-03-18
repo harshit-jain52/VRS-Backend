@@ -46,7 +46,7 @@ customerSchema.statics.signUp = async function (
   address
 ) {
   // check if username exists
-  const exists = await this.findOne({ username });
+  let exists = await this.findOne({ username });
   if (exists) {
     throw new Error("Username already in use");
   }
