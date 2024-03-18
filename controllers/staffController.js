@@ -4,32 +4,6 @@ const Order = require("../models/orderModel");
 const Video = require("../models/videoModel");
 const createToken = require("../helpers/createToken");
 
-// Sign Up Staff
-const signUpStaff = async (req, res) => {
-  const { username, password, name, email, phone, address } = req.body;
-
-  try {
-    const staff = await Staff.signUp(
-      username,
-      password,
-      name,
-      email,
-      phone,
-      address
-    );
-
-    // create token
-    const token = createToken(staff._id);
-
-    res.status(200).json({
-      username,
-      token,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
 // Log In Staff
 const logInStaff = async (req, res) => {
   const { username, password } = req.body;
@@ -143,7 +117,6 @@ const changeVideoStock = async (req, res) => {
 };
 
 module.exports = {
-  signUpStaff,
   logInStaff,
   getStaff,
   updateStaff,

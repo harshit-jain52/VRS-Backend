@@ -1,21 +1,15 @@
 const mongoose = require("mongoose");
 const Manager = require("../models/managerModel");
 const Video = require("../models/videoModel");
+const Staff = require("../models/staffModel");
 const createToken = require("../helpers/createToken");
 
-// Sign Up Manager
-const signUpManager = async (req, res) => {
-  const { username, password, name, email, phone, address } = req.body;
+// Log In Manager
+const logInManager = async (req, res) => {
+  const { username, password } = req.body;
 
   try {
-    const manager = await Manager.signUp(
-      username,
-      password,
-      name,
-      email,
-      phone,
-      address
-    );
+    const manager = await Manager.logIn(username, password);
 
     // create token
     const token = createToken(manager._id);
@@ -29,15 +23,22 @@ const signUpManager = async (req, res) => {
   }
 };
 
-// Log In Manager
-const logInManager = async (req, res) => {
-  const { username, password } = req.body;
+// Sign Up Staff
+const recruitStaff = async (req, res) => {
+  const { username, password, name, email, phone, address } = req.body;
 
   try {
-    const manager = await Manager.logIn(username, password);
+    const staff = await Staff.signUp(
+      username,
+      password,
+      name,
+      email,
+      phone,
+      address
+    );
 
     // create token
-    const token = createToken(manager._id);
+    const token = createToken(staff._id);
 
     res.status(200).json({
       username,
@@ -112,11 +113,11 @@ const getAllOrders = async (req, res) => {
 };
 
 module.exports = {
-  signUpManager,
   logInManager,
   getManager,
   deleteManager,
   updateManager,
   addVideo,
   getAllOrders,
+  recruitStaff,
 };
