@@ -18,6 +18,14 @@ const getVideos = async (req, res) => {
   res.status(200).json(videos);
 };
 
+// GET videos by genre
+const getVideosByGenre = async (req, res) => {
+  const { genre } = req.params;
+  const videos = await Video.find({ genre: { $in: [genre] } });
+
+  res.status(200).json(videos);
+};
+
 // GET a video
 const getVideo = async (req, res) => {
   const { id } = req.params;
@@ -67,6 +75,7 @@ const updateVideo = async (req, res) => {
 module.exports = {
   createVideo,
   getVideos,
+  getVideosByGenre,
   getVideo,
   deleteVideo,
   updateVideo,

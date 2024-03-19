@@ -12,6 +12,10 @@ with open("movies.json", "r") as json_file:
         d["stock"] = 10
         d["buy_price"] = 120.50
         d["rent_price"] = 50.50
+        for i in range(len(d["genre"])):
+            d["genre"][i] = d["genre"][i].strip().lower()
+        d["genre"] = list(set(d["genre"]))
+
         url = "http://localhost:9000/api/videos"
         res = requests.post(url, json=d)
         print(res.text)
