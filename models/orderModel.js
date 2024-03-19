@@ -15,6 +15,7 @@ const orderSchema = new Schema(
     duration: {
       type: Number,
       required: true,
+      default: 1,
     },
     customer: {
       type: mongoose.Schema.Types.ObjectId,

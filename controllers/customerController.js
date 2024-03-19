@@ -101,42 +101,36 @@ const updateCustomer = async (req, res) => {
 // POST a new order
 const newOrder = async (req, res) => {
   const { _id } = req.user;
-  const { cart } = req.body;
+  const { videoId, quantity, duration } = req.body;
   try {
-    cart.forEach(async (item) => {
-      if (!mongoose.Types.ObjectId.isValid(item.videoId)) {
-        return res.status(400).json({ error: "No such video found" });
-      }
-      const video = await Video.findById(item.videoId);
-      if (!video) {
-        return res.status(400).json({ error: "No such video found" });
-      }
+    if (!mongoose.Types.ObjectId.isValid(videoId)) {
+      return res.status(400).json({ error: "No such video found" });
+    }
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(400).json({ error: "No such video found" });
+    }
 
-      if (video.stock < item.quantity) {
-        return res
-          .status(400)
-          .json({ error: "Not enough stock", video: item.videoId });
-      }
-    });
+    if (video.stock < quantity) {
+      return res
+        .status(400)
+        .json({ error: "Not enough stock", video: videoId });
+    }
 
     const customer = await Customer.findById(_id);
-    cart.forEach(async (item) => {
-      const order = await Order.create({
-        video: item.videoId,
-        quantity: item.quantity,
-        duration: item.duration,
-        customer: _id,
-        status: item.quantity === Infinity ? "bought" : "rented",
-      });
-      const video = Video.findOneAndUpdate(
-        { _id: item.videoId },
-        { $push: { ordered: order._id } },
-        { $inc: { stock: -item.quantity } }
-      );
-      customer.orders.push(order);
+    const order = await Order.create({
+      video: videoId,
+      quantity: quantity,
+      duration: duration,
+      customer: _id,
+      status: quantity === Infinity ? "bought" : "rented",
     });
+    video.ordered.push(order._id);
+    video.stock -= quantity;
+    customer.orders.push(order._id);
+    await video.save();
     await customer.save();
-    res.status(200).json(cart);
+    res.status(200).json(order);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
