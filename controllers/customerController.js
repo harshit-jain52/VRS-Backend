@@ -123,7 +123,7 @@ const newOrder = async (req, res) => {
       quantity: quantity,
       duration: duration,
       customer: _id,
-      status: quantity === Infinity ? "bought" : "rented",
+      status: duration === 100 ? "bought" : "rented",
     });
     video.ordered.push(order._id);
     video.stock -= quantity;
