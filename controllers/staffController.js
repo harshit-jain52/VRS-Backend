@@ -76,21 +76,18 @@ const changeOrderStatus = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(orderID)) {
     return res.status(400).json({ error: "No such order found" });
   }
-
   const order = await Order.findById(orderID);
   if (!order) {
     return res.status(400).json({ error: "No such order found" });
   }
+
   if (status === "returned") {
-    order.videos.forEach(async (vid) => {
-      const { videoId, quantity } = vid;
-      if (!mongoose.Types.ObjectId.isValid(videoID)) {
-        return res.status(400).json({ error: "No such video found" });
-      }
-      const video = await Video.findById(videoId);
-      const stock = video.stock + quantity;
-      await Video.findOneAndUpdate({ _id: videoId }, { stock: stock });
-    });
+    if (!mongoose.Types.ObjectId.isValid(order.video)) {
+      return res.status(400).json({ error: "No such video found" });
+    }
+    const video = await Video.findById(videoId);
+    const stock = video.stock + quantity;
+    await Video.findOneAndUpdate({ _id: videoId }, { stock: stock });
   }
   order.status = status;
   await order.save();

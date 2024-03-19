@@ -30,7 +30,7 @@ const videoSchema = new Schema({
   cast: {
     type: [{ name: String, name_id: String }],
   },
-  rented: {
+  ordered: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Order",
   },

@@ -113,22 +113,30 @@ const newOrder = async (req, res) => {
       }
 
       if (video.stock < item.quantity) {
-        return res.status(400).json({ error: "Not enough stock" });
+        return res
+          .status(400)
+          .json({ error: "Not enough stock", video: item.videoId });
       }
     });
 
-    const order = await Order.create({ videos: cart, customer: _id });
     const customer = await Customer.findById(_id);
-    customer.orders.push(order._id);
-    await customer.save();
     cart.forEach(async (item) => {
+      const order = await Order.create({
+        video: item.videoId,
+        quantity: item.quantity,
+        duration: item.duration,
+        customer: _id,
+        status: item.quantity === Infinity ? "bought" : "rented",
+      });
       const video = Video.findOneAndUpdate(
         { _id: item.videoId },
-        { $push: { rented: _id } },
+        { $push: { ordered: order._id } },
         { $inc: { stock: -item.quantity } }
       );
+      customer.orders.push(order);
     });
-    res.status(200).json(order);
+    await customer.save();
+    res.status(200).json(cart);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -140,10 +148,9 @@ const getOrders = async (req, res) => {
   const customer = await Customer.findById(_id).populate({
     path: "orders",
     populate: {
-      path: "videos.videoId",
-      model: "Video",
+      path: "video",
     },
-    select: "videos status createdAt",
+    select: "video status createdAt",
   });
 
   res.status(200).json(customer.orders);
