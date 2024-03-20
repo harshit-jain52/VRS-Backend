@@ -143,8 +143,9 @@ const getOrders = async (req, res) => {
     path: "orders",
     populate: {
       path: "video",
+      select: "-ordered -stock -createdAt -updatedAt -__v",
     },
-    select: "video status createdAt",
+    select: "video quantity duration status createdAt",
   });
 
   res.status(200).json(customer.orders);
