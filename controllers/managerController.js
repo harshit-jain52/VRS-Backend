@@ -34,7 +34,7 @@ const recruitStaff = async (req, res) => {
       name,
       email,
       phone,
-      address
+      address,
     );
 
     // create token
@@ -77,6 +77,35 @@ const deleteManager = async (req, res) => {
   }
 
   res.status(200).json(manager);
+};
+
+const deleteStaff = async (req, res) => {
+  const { _id } = req.body.staffToDelete;
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
+    return res.status(400).json({ error: "No such staff found" });
+  }
+
+  const staff = await Staff.findOneAndDelete({ _id: _id });
+  if (!staff) {
+    return res.status(400).json({ error: "No such staff found" });
+  }
+
+  res.status(200).json(staff);
+};
+
+const deleteUser = async (req, res) => {
+  const { _id } = req.body.userToDelete;
+
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
+    return res.status(400).json({ error: "No such user found" });
+  }
+
+  const user = await User.findOneAndDelete({ _id: _id });
+  if (!user) {
+    return res.status(400).json({ error: "No such user found" });
+  }
+
+  res.status(200).json(user);
 };
 
 // UPDATE a manager
