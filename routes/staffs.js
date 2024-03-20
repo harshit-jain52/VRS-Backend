@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   logInStaff,
   getStaff,
-  deleteStaff,
   updateStaff,
   changeOrderStatus,
   changeVideoStock,
@@ -18,9 +17,8 @@ router.get("/auth", (req, res) => {
   res.status(200).json({ message: "Authorized" });
 });
 router.get("/profile", getStaff);
-router.patch("/editprofile", updateStaff);
-router.delete("/deleteaccount", deleteStaff);
-router.patch("/orderstatus", changeOrderStatus);
-router.patch("/stock", changeVideoStock);
+router.put("/profile", updateStaff);
+router.put("/orderstatus", changeOrderStatus);
+router.put("/stock", changeVideoStock);
 
 module.exports = router;

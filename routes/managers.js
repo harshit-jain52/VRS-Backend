@@ -20,11 +20,11 @@ router.get("/auth", (req, res) => {
   res.status(200).json({ message: "Authorized" });
 });
 router.get("/profile", getManager);
-router.patch("/editprofile", updateManager);
+router.put("/profile", updateManager);
+router.post("/createstaff", recruitStaff);
 router.delete("/deletestaff", deleteStaff);
 router.delete("/deletecustomer", deleteCustomer);
-router.post("/addvideo", addVideo);
-router.get("/allorders", getAllOrders);
-router.post("/createStaff", recruitStaff);
+router.post("/video", addVideo);
+router.get("/orders", getAllOrders);
 
 module.exports = router;

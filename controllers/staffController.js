@@ -38,22 +38,6 @@ const getStaff = async (req, res) => {
   res.status(200).json(staff);
 };
 
-// DELETE a staff
-const deleteStaff = async (req, res) => {
-  const { _id } = req.user;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such staff found" });
-  }
-
-  const staff = await Staff.findOneAndDelete({ _id: _id });
-  if (!staff) {
-    return res.status(400).json({ error: "No such staff found" });
-  }
-
-  res.status(200).json(staff);
-};
-
 // UPDATE a staff
 const updateStaff = async (req, res) => {
   const { _id } = req.user;
@@ -117,7 +101,6 @@ module.exports = {
   logInStaff,
   getStaff,
   updateStaff,
-  deleteStaff,
   changeOrderStatus,
   changeVideoStock,
 };

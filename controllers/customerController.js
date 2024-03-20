@@ -170,7 +170,7 @@ const updateCart = async (req, res) => {
 
   const { cart } = req.body;
 
-  cart.array.forEach((item) => {
+  cart.forEach((item) => {
     if (!mongoose.Types.ObjectId.isValid(item.id)) {
       return res.status(400).json({ error: "No such video found" });
     }

@@ -24,11 +24,11 @@ router.get("/auth", (req, res) => {
   res.status(200).json({ message: "Authorized" });
 });
 router.get("/profile", getCustomer);
-router.patch("/editprofile", updateCustomer);
-router.post("/neworder", newOrder);
-router.get("/myorders", getOrders);
-router.delete("/deleteaccount", deleteCustomer);
+router.put("/profile", updateCustomer);
+router.delete("/profile", deleteCustomer);
+router.post("/order", newOrder);
+router.get("/order", getOrders);
 router.get("/cart", getCart);
-router.patch("/updatecart", updateCart);
+router.put("/cart", updateCart);
 
 module.exports = router;
