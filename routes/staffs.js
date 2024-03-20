@@ -14,6 +14,9 @@ const staffAuth = require("../middleware/staffAuth");
 router.post("/login", logInStaff);
 
 router.use(staffAuth);
+router.get("/auth", (req, res) => {
+  res.status(200).json({ message: "Authorized" });
+});
 router.get("/profile", getStaff);
 router.patch("/editprofile", updateStaff);
 router.delete("/deleteaccount", deleteStaff);

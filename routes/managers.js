@@ -15,6 +15,9 @@ const managerAuth = require("../middleware/managerAuth");
 router.post("/login", logInManager);
 
 router.use(managerAuth);
+router.get("/auth", (req, res) => {
+  res.status(200).json({ message: "Authorized" });
+});
 router.get("/profile", getManager);
 router.patch("/editprofile", updateManager);
 router.delete("/deleteaccount", deleteManager);

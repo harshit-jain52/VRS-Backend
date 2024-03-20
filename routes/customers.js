@@ -18,6 +18,9 @@ router.post("/signup", signUpCustomer);
 router.post("/login", logInCustomer);
 
 router.use(customerAuth);
+router.get("/auth", (req, res) => {
+  res.status(200).json({ message: "Authorized" });
+});
 router.get("/profile", getCustomer);
 router.patch("/editprofile", updateCustomer);
 router.post("/neworder", newOrder);
