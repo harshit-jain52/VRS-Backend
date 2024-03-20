@@ -8,6 +8,8 @@ const {
   getCustomer,
   deleteCustomer,
   updateCustomer,
+  getCart,
+  updateCart,
 } = require("../controllers/customerController");
 const customerAuth = require("../middleware/customerAuth");
 
@@ -26,5 +28,7 @@ router.patch("/editprofile", updateCustomer);
 router.post("/neworder", newOrder);
 router.get("/myorders", getOrders);
 router.delete("/deleteaccount", deleteCustomer);
+router.get("/cart", getCart);
+router.patch("/updatecart", updateCart);
 
 module.exports = router;

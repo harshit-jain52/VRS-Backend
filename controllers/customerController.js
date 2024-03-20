@@ -150,6 +150,37 @@ const getOrders = async (req, res) => {
   res.status(200).json(customer.orders);
 };
 
+// GET cart
+const getCart = async (req, res) => {
+  const { _id } = req.user;
+  const customer = await Customer.findById(_id);
+  if (!customer) {
+    return res.status(400).json({ error: "No such customer found" });
+  }
+  res.status(200).json(customer.cart);
+};
+
+// UPDATE cart
+const updateCart = async (req, res) => {
+  const { _id } = req.user;
+  const customer = await Customer.findById(_id);
+  if (!customer) {
+    return res.status(400).json({ error: "No such customer found" });
+  }
+
+  const { cart } = req.body;
+
+  cart.array.forEach((item) => {
+    if (!mongoose.Types.ObjectId.isValid(item.id)) {
+      return res.status(400).json({ error: "No such video found" });
+    }
+  });
+
+  customer.cart = cart;
+  await customer.save();
+  res.status(200).json(customer.cart);
+};
+
 module.exports = {
   signUpCustomer,
   logInCustomer,
@@ -158,4 +189,6 @@ module.exports = {
   getCustomer,
   deleteCustomer,
   updateCustomer,
+  getCart,
+  updateCart,
 };

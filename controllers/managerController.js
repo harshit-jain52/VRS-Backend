@@ -3,6 +3,7 @@ const Manager = require("../models/managerModel");
 const Video = require("../models/videoModel");
 const Staff = require("../models/staffModel");
 const createToken = require("../helpers/createToken");
+const Customer = require("../models/customerModel");
 
 // Log In Manager
 const logInManager = async (req, res) => {
@@ -34,7 +35,7 @@ const recruitStaff = async (req, res) => {
       name,
       email,
       phone,
-      address,
+      address
     );
 
     // create token
@@ -64,28 +65,14 @@ const getManager = async (req, res) => {
   res.status(200).json(manager);
 };
 
-// DELETE a manager
-const deleteManager = async (req, res) => {
-  const { _id } = req.user;
-  if (!mongoose.Types.ObjectId.isValid(_id)) {
-    return res.status(400).json({ error: "No such manager found" });
-  }
-
-  const manager = await Manager.findOneAndDelete({ _id: _id });
-  if (!manager) {
-    return res.status(400).json({ error: "No such manager found" });
-  }
-
-  res.status(200).json(manager);
-};
-
+// DELETE a staff
 const deleteStaff = async (req, res) => {
-  const { _id } = req.body.staffToDelete;
+  const { staffID } = req.body;
   if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: "No such staff found" });
   }
 
-  const staff = await Staff.findOneAndDelete({ _id: _id });
+  const staff = await Staff.findOneAndDelete({ _id: staffID });
   if (!staff) {
     return res.status(400).json({ error: "No such staff found" });
   }
@@ -93,19 +80,20 @@ const deleteStaff = async (req, res) => {
   res.status(200).json(staff);
 };
 
-const deleteUser = async (req, res) => {
-  const { _id } = req.body.userToDelete;
+// DELETE a customer
+const deleteCustomer = async (req, res) => {
+  const { customerID } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(_id)) {
-    return res.status(400).json({ error: "No such user found" });
+    return res.status(400).json({ error: "No such customer found" });
   }
 
-  const user = await User.findOneAndDelete({ _id: _id });
-  if (!user) {
-    return res.status(400).json({ error: "No such user found" });
+  const customer = await Customer.findOneAndDelete({ _id: customerID });
+  if (!customer) {
+    return res.status(400).json({ error: "No such customer found" });
   }
 
-  res.status(200).json(user);
+  res.status(200).json(customer);
 };
 
 // UPDATE a manager
@@ -144,9 +132,10 @@ const getAllOrders = async (req, res) => {
 module.exports = {
   logInManager,
   getManager,
-  deleteManager,
   updateManager,
   addVideo,
   getAllOrders,
   recruitStaff,
+  deleteStaff,
+  deleteCustomer,
 };

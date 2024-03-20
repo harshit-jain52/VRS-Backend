@@ -34,6 +34,16 @@ const customerSchema = new Schema({
   address: {
     type: String,
   },
+  cart: {
+    type: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId, ref: "Video" },
+        quantity: Number,
+        duration: Number,
+      },
+    ],
+    default: [],
+  },
 });
 
 // static methods
