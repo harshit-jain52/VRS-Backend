@@ -145,10 +145,10 @@ const getOrders = async (req, res) => {
   const customer = await Customer.findById(_id).populate({
     path: "orders",
     populate: {
-      path: "video",
+      path: "videoID",
       select: "-ordered -stock -createdAt -updatedAt -__v",
     },
-    select: "video quantity duration status price createdAt",
+    select: "videoID quantity duration status price createdAt",
   });
 
   res.status(200).json(customer.orders);
