@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
   {
-    video: {
+    videoID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Video",
       required: true,
@@ -16,7 +16,11 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
-    customer: {
+    price: {
+      type: Number,
+      required: true,
+    },
+    customerID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",
       required: true,

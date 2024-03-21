@@ -101,12 +101,12 @@ const updateCustomer = async (req, res) => {
 // POST a new order
 const newOrder = async (req, res) => {
   const { _id } = req.user;
-  const { videoId, quantity, duration } = req.body;
+  const { videoID, quantity, duration } = req.body;
   try {
-    if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    if (!mongoose.Types.ObjectId.isValid(videoID)) {
       return res.status(400).json({ error: "No such video found" });
     }
-    const video = await Video.findById(videoId);
+    const video = await Video.findById(videoID);
     if (!video) {
       return res.status(400).json({ error: "No such video found" });
     }
@@ -119,10 +119,13 @@ const newOrder = async (req, res) => {
 
     const customer = await Customer.findById(_id);
     const order = await Order.create({
-      video: videoId,
+      videoID: videoID,
       quantity: quantity,
       duration: duration,
-      customer: _id,
+      price:
+        quantity *
+        (duration === 100 ? video.buy_price : video.rent_price * duration),
+      customerID: _id,
       status: duration === 100 ? "bought" : "rented",
     });
     video.ordered.push(order._id);
@@ -145,7 +148,7 @@ const getOrders = async (req, res) => {
       path: "video",
       select: "-ordered -stock -createdAt -updatedAt -__v",
     },
-    select: "video quantity duration status createdAt",
+    select: "video quantity duration status price createdAt",
   });
 
   res.status(200).json(customer.orders);
