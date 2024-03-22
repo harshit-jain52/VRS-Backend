@@ -4,8 +4,10 @@ const {
   logInManager,
   getManager,
   updateManager,
+  getVideos,
   addVideo,
-  getAllOrders,
+  updateVideo,
+  deleteVideo,
   recruitStaff,
   deleteStaff,
   deleteCustomer,
@@ -24,7 +26,9 @@ router.put("/profile", updateManager);
 router.post("/createstaff", recruitStaff);
 router.delete("/deletestaff", deleteStaff);
 router.delete("/deletecustomer", deleteCustomer);
+router.get("/videos", getVideos);
 router.post("/video", addVideo);
-router.get("/orders", getAllOrders);
+router.put("/video/:id", updateVideo);
+router.delete("/video/:id", deleteVideo);
 
 module.exports = router;

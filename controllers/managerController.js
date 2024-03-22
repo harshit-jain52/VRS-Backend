@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const Manager = require("../models/managerModel");
 const Video = require("../models/videoModel");
 const Staff = require("../models/staffModel");
-const createToken = require("../helpers/createToken");
 const Customer = require("../models/customerModel");
+const Order = require("../models/orderModel");
+const createToken = require("../helpers/createToken");
 
 // Log In Manager
 const logInManager = async (req, res) => {
@@ -112,6 +113,13 @@ const updateManager = async (req, res) => {
   res.status(200).json(manager); // manager before update
 };
 
+// GET all videos
+const getVideos = async (req, res) => {
+  const videos = await Video.find({}).populate("ordered");
+
+  res.status(200).json(videos);
+};
+
 // Add a video
 const addVideo = async (req, res) => {
   try {
@@ -122,19 +130,45 @@ const addVideo = async (req, res) => {
   }
 };
 
-// GET all orders
-const getAllOrders = async (req, res) => {
-  const orders = await Order.find({});
+// DELETE a video
+const deleteVideo = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "No such video found" });
+  }
 
-  res.status(200).json(orders);
+  const video = await Video.findOneAndDelete({ _id: id });
+  if (!video) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  res.status(200).json(video);
+};
+
+// UPDATE a video
+const updateVideo = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  const video = await Video.findOneAndUpdate({ _id: id }, { ...req.body });
+
+  if (!video) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  res.status(200).json(video); // video before update
 };
 
 module.exports = {
   logInManager,
   getManager,
   updateManager,
+  getVideos,
   addVideo,
-  getAllOrders,
+  updateVideo,
+  deleteVideo,
   recruitStaff,
   deleteStaff,
   deleteCustomer,

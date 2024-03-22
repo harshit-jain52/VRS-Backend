@@ -4,6 +4,7 @@ const {
   logInStaff,
   getStaff,
   updateStaff,
+  getAllOrders,
   changeOrderStatus,
   changeVideoStock,
 } = require("../controllers/staffController");
@@ -18,7 +19,8 @@ router.get("/auth", (req, res) => {
 });
 router.get("/profile", getStaff);
 router.put("/profile", updateStaff);
-router.put("/orderstatus", changeOrderStatus);
+router.get("/orders", getAllOrders);
+router.put("/orders", changeOrderStatus);
 router.put("/stock", changeVideoStock);
 
 module.exports = router;

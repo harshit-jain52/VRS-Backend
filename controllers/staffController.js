@@ -54,6 +54,15 @@ const updateStaff = async (req, res) => {
   res.status(200).json(staff); // staff before update
 };
 
+// GET all orders
+const getAllOrders = async (req, res) => {
+  const orders = await Order.find({})
+    .populate("videoID")
+    .populate("customerID");
+
+  res.status(200).json(orders);
+};
+
 // Change Order Status
 const changeOrderStatus = async (req, res) => {
   const { orderID, status } = req.body;
@@ -101,6 +110,7 @@ module.exports = {
   logInStaff,
   getStaff,
   updateStaff,
+  getAllOrders,
   changeOrderStatus,
   changeVideoStock,
 };

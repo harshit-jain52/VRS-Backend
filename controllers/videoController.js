@@ -41,42 +41,9 @@ const getVideo = async (req, res) => {
   res.status(200).json(video);
 };
 
-// DELETE a video
-const deleteVideo = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such video found" });
-  }
-
-  const video = await Video.findOneAndDelete({ _id: id });
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
-  }
-
-  res.status(200).json(video);
-};
-
-// UPDATE a video
-const updateVideo = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such video found" });
-  }
-
-  const video = await Video.findOneAndUpdate({ _id: id }, { ...req.body });
-
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
-  }
-
-  res.status(200).json(video); // video before update
-};
-
 module.exports = {
   createVideo,
   getVideos,
   getVideosByGenre,
   getVideo,
-  deleteVideo,
-  updateVideo,
 };
