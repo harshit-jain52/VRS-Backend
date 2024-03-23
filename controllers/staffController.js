@@ -30,7 +30,7 @@ const getStaff = async (req, res) => {
     return res.status(400).json({ error: "No such staff found" });
   }
 
-  const staff = await Staff.findById(_id);
+  const staff = await Staff.findById(_id, { _id: 0, password: 0 });
   if (!staff) {
     return res.status(400).json({ error: "No such staff found" });
   }
@@ -65,7 +65,8 @@ const getAllOrders = async (req, res) => {
 
 // Change Order Status
 const changeOrderStatus = async (req, res) => {
-  const { orderID, status } = req.body;
+  const { id: orderID } = req.params;
+  const { status } = req.body;
   if (!mongoose.Types.ObjectId.isValid(orderID)) {
     return res.status(400).json({ error: "No such order found" });
   }
@@ -75,12 +76,12 @@ const changeOrderStatus = async (req, res) => {
   }
 
   if (status === "returned") {
-    if (!mongoose.Types.ObjectId.isValid(order.video)) {
+    if (!mongoose.Types.ObjectId.isValid(order.videoID)) {
       return res.status(400).json({ error: "No such video found" });
     }
-    const video = await Video.findById(videoId);
-    const stock = video.stock + quantity;
-    await Video.findOneAndUpdate({ _id: videoId }, { stock: stock });
+    const video = await Video.findById(order.videoID);
+    video.stock += order.quantity;
+    await video.save();
   }
   order.status = status;
   await order.save();

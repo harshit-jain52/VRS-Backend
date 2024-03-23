@@ -58,7 +58,7 @@ const getManager = async (req, res) => {
     return res.status(400).json({ error: "No such manager found" });
   }
 
-  const manager = await Manager.findById(_id);
+  const manager = await Manager.findById(_id, { _id: 0, password: 0 });
   if (!manager) {
     return res.status(400).json({ error: "No such manager found" });
   }

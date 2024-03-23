@@ -56,7 +56,7 @@ const getCustomer = async (req, res) => {
     return res.status(400).json({ error: "No such customer found" });
   }
 
-  const customer = await Customer.findById(_id);
+  const customer = await Customer.findById(_id, { _id: 0, password: 0 });
   if (!customer) {
     return res.status(400).json({ error: "No such customer found" });
   }

@@ -20,7 +20,7 @@ router.get("/auth", (req, res) => {
 router.get("/profile", getStaff);
 router.put("/profile", updateStaff);
 router.get("/orders", getAllOrders);
-router.put("/orders", changeOrderStatus);
+router.put("/orders/:id", changeOrderStatus);
 router.put("/stock", changeVideoStock);
 
 module.exports = router;
