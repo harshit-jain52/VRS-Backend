@@ -137,25 +137,26 @@ const deleteVideo = async (req, res) => {
     return res.status(400).json({ error: "No such video found" });
   }
 
-  const video = Video.findById(id);
+  const video = await Video.findById(id);
   if (!video) {
     return res.status(400).json({ error: "No such video found" });
   }
 
-  video.ordered.forEach(async (orderID) => {
-    const order = Order.findById(orderID);
+  for (const orderID of video.ordered) {
+    const order = await Order.findById(orderID);
     if (order.status === "rented") {
       return res
         .status(400)
         .json({ error: "Cannot delete a movie that is currently rented" });
     }
-  });
+  }
 
-  const customers = Customer.find({ cart: { id: id } });
-  customers.forEach(async (customer) => {
-    const cart = customer.cart.filter((item) => item.id !== id);
-    await Customer.findOneAndUpdate({ _id: customer._id }, { cart });
-  });
+  const customers = await Customer.find({ "cart.id": id });
+  for (const customer of customers) {
+    const cart = customer.cart.filter((item) => item.id.toString() !== id);
+    customer.cart = cart;
+    await customer.save();
+  }
 
   await Video.findOneAndDelete({ _id: id });
   res.status(200).json(video);
