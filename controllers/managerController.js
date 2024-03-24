@@ -137,11 +137,27 @@ const deleteVideo = async (req, res) => {
     return res.status(400).json({ error: "No such video found" });
   }
 
-  const video = await Video.findOneAndDelete({ _id: id });
+  const video = Video.findById(id);
   if (!video) {
     return res.status(400).json({ error: "No such video found" });
   }
 
+  video.ordered.forEach(async (orderID) => {
+    const order = Order.findById(orderID);
+    if (order.status === "rented") {
+      return res
+        .status(400)
+        .json({ error: "Cannot delete a movie that is currently rented" });
+    }
+  });
+
+  const customers = Customer.find({ cart: { id: id } });
+  customers.forEach(async (customer) => {
+    const cart = customer.cart.filter((item) => item.id !== id);
+    await Customer.findOneAndUpdate({ _id: customer._id }, { cart });
+  });
+
+  await Video.findOneAndDelete({ _id: id });
   res.status(200).json(video);
 };
 
