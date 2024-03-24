@@ -120,6 +120,21 @@ const getVideos = async (req, res) => {
   res.status(200).json(videos);
 };
 
+// GET a video
+const getVideo = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  const video = await Video.findById(id).populate("ordered");
+  if (!video) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  res.status(200).json(video);
+};
+
 // Add a video
 const addVideo = async (req, res) => {
   try {
@@ -183,6 +198,7 @@ module.exports = {
   getManager,
   updateManager,
   getVideos,
+  getVideo,
   addVideo,
   updateVideo,
   deleteVideo,

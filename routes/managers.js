@@ -5,6 +5,7 @@ const {
   getManager,
   updateManager,
   getVideos,
+  getVideo,
   addVideo,
   updateVideo,
   deleteVideo,
@@ -27,6 +28,7 @@ router.post("/createstaff", recruitStaff);
 router.delete("/deletestaff", deleteStaff);
 router.delete("/deletecustomer", deleteCustomer);
 router.get("/videos", getVideos);
+router.get("/video/:id", getVideo);
 router.post("/video", addVideo);
 router.put("/video/:id", updateVideo);
 router.delete("/video/:id", deleteVideo);
