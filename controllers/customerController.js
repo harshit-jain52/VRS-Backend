@@ -101,7 +101,7 @@ const updateCustomer = async (req, res) => {
 // POST a new order
 const newOrder = async (req, res) => {
   const { _id } = req.user;
-  const { videoID, quantity, duration } = req.body;
+  const { videoID, quantity, duration, transactionID } = req.body;
   try {
     if (!mongoose.Types.ObjectId.isValid(videoID)) {
       return res.status(400).json({ error: "No such video found" });
@@ -109,12 +109,6 @@ const newOrder = async (req, res) => {
     const video = await Video.findById(videoID);
     if (!video) {
       return res.status(400).json({ error: "No such video found" });
-    }
-
-    if (video.stock < quantity) {
-      return res
-        .status(400)
-        .json({ error: "Not enough stock", video: videoId });
     }
 
     const customer = await Customer.findById(_id);
@@ -126,6 +120,7 @@ const newOrder = async (req, res) => {
         quantity *
         (duration === 100 ? video.buy_price : video.rent_price * duration),
       customerID: _id,
+      transactionID: transactionID,
       status: duration === 100 ? "bought" : "rented",
     });
     video.ordered.push(order._id);

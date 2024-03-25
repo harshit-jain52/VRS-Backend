@@ -30,6 +30,10 @@ const orderSchema = new Schema(
       enum: ["rented", "returned", "bought"],
       default: "rented",
     },
+    transactionID: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
