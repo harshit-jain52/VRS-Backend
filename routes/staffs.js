@@ -21,6 +21,6 @@ router.get("/profile", getStaff);
 router.put("/profile", updateStaff);
 router.get("/orders", getAllOrders);
 router.put("/orders/:id", changeOrderStatus);
-router.put("/stock", changeVideoStock);
+router.put("/video/:id", changeVideoStock);
 
 module.exports = router;

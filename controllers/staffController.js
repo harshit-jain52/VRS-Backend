@@ -91,7 +91,8 @@ const changeOrderStatus = async (req, res) => {
 
 // Change Stock
 const changeVideoStock = async (req, res) => {
-  const { videoID, stock } = req.body;
+  const { id: videoID } = req.params;
+  const { stock } = req.body;
   if (!mongoose.Types.ObjectId.isValid(videoID)) {
     return res.status(400).json({ error: "No such video found" });
   }
