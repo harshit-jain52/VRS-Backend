@@ -46,6 +46,10 @@ const videoSchema = new Schema({
     type: Number,
     required: true,
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Video = mongoose.model("Video", videoSchema);

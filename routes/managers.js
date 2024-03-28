@@ -8,7 +8,7 @@ const {
   getVideo,
   addVideo,
   updateVideo,
-  deleteVideo,
+  disableVideo,
   recruitStaff,
   deleteStaff,
   deleteCustomer,
@@ -31,6 +31,6 @@ router.get("/videos", getVideos);
 router.get("/video/:id", getVideo);
 router.post("/video", addVideo);
 router.put("/video/:id", updateVideo);
-router.delete("/video/:id", deleteVideo);
+router.put("/video/:id", disableVideo);
 
 module.exports = router;

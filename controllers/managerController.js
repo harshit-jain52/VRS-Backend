@@ -145,8 +145,8 @@ const addVideo = async (req, res) => {
   }
 };
 
-// DELETE a video
-const deleteVideo = async (req, res) => {
+// DISABLE a video
+const disableVideo = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "No such video found" });
@@ -157,15 +157,6 @@ const deleteVideo = async (req, res) => {
     return res.status(400).json({ error: "No such video found" });
   }
 
-  for (const orderID of video.ordered) {
-    const order = await Order.findById(orderID);
-    if (order.status === "rented") {
-      return res
-        .status(400)
-        .json({ error: "Cannot delete a movie that is currently rented" });
-    }
-  }
-
   const customers = await Customer.find({ "cart.id": id });
   for (const customer of customers) {
     const cart = customer.cart.filter((item) => item.id.toString() !== id);
@@ -173,7 +164,7 @@ const deleteVideo = async (req, res) => {
     await customer.save();
   }
 
-  await Video.findOneAndDelete({ _id: id });
+  await Video.findOneAndUpdate({ _id: id }, { disabled: true });
   res.status(200).json(video);
 };
 
@@ -201,7 +192,7 @@ module.exports = {
   getVideo,
   addVideo,
   updateVideo,
-  deleteVideo,
+  disableVideo,
   recruitStaff,
   deleteStaff,
   deleteCustomer,
