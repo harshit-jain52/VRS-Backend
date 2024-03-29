@@ -16,6 +16,6 @@ with open("movies.json", "r") as json_file:
             d["genre"][i] = d["genre"][i].strip().lower()
         d["genre"] = list(set(d["genre"]))
 
-        url = "http://localhost:9000/api/videos"
+        url = "http://localhost:9000/api/movies"
         res = requests.post(url, json=d)
         print(res.text)

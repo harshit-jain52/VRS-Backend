@@ -37,7 +37,7 @@ const customerSchema = new Schema({
   cart: {
     type: [
       {
-        id: { type: mongoose.Schema.Types.ObjectId, ref: "Video" },
+        id: { type: mongoose.Schema.Types.ObjectId, ref: "Movie" },
         quantity: Number,
         duration: Number,
       },

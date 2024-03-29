@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
   {
-    videoID: {
+    movieID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Video",
+      ref: "Movie",
       required: true,
     },
     quantity: {

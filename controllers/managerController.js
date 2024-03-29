@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Manager = require("../models/managerModel");
-const Video = require("../models/videoModel");
+const Movie = require("../models/movieModel");
 const Staff = require("../models/staffModel");
 const Customer = require("../models/customerModel");
 const Order = require("../models/orderModel");
@@ -113,48 +113,48 @@ const updateManager = async (req, res) => {
   res.status(200).json(manager); // manager before update
 };
 
-// GET all videos
-const getVideos = async (req, res) => {
-  const videos = await Video.find({}).populate("ordered");
+// GET all movies
+const getMovies = async (req, res) => {
+  const movies = await Movie.find({}).populate("ordered");
 
-  res.status(200).json(videos);
+  res.status(200).json(movies);
 };
 
-// GET a video
-const getVideo = async (req, res) => {
+// GET a movie
+const getMovie = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such video found" });
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  const video = await Video.findById(id).populate("ordered");
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
+  const movie = await Movie.findById(id).populate("ordered");
+  if (!movie) {
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  res.status(200).json(video);
+  res.status(200).json(movie);
 };
 
-// Add a video
-const addVideo = async (req, res) => {
+// Add a movie
+const addMovie = async (req, res) => {
   try {
-    const video = await Video.create({ ...req.body });
-    res.status(200).json(video);
+    const movie = await Movie.create({ ...req.body });
+    res.status(200).json(movie);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// DISABLE a video
-const disableVideo = async (req, res) => {
+// DISABLE a movie
+const disableMovie = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such video found" });
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  const video = await Video.findById(id);
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
+  const movie = await Movie.findById(id);
+  if (!movie) {
+    return res.status(400).json({ error: "No such movie found" });
   }
 
   const customers = await Customer.find({ "cart.id": id });
@@ -164,30 +164,30 @@ const disableVideo = async (req, res) => {
     await customer.save();
   }
 
-  await Video.findOneAndUpdate({ _id: id }, { disabled: true });
-  res.status(200).json(video);
+  await Movie.findOneAndUpdate({ _id: id }, { disabled: true });
+  res.status(200).json(movie);
 };
 
-// UPDATE a video
-const updateVideo = async (req, res) => {
+// UPDATE a movie
+const updateMovie = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such video found" });
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  const video = await Video.findOneAndUpdate({ _id: id }, { ...req.body });
+  const movie = await Movie.findOneAndUpdate({ _id: id }, { ...req.body });
 
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
+  if (!movie) {
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  res.status(200).json(video); // video before update
+  res.status(200).json(movie); // movie before update
 };
 
 // GET all orders
 const getAllOrders = async (req, res) => {
   const orders = await Order.find({})
-    .populate("videoID")
+    .populate("movieID")
     .populate("customerID")
     .populate("returnHandledBy");
 
@@ -208,12 +208,12 @@ const changeOrderStatus = async (req, res) => {
   }
 
   if (status === "returned") {
-    if (!mongoose.Types.ObjectId.isValid(order.videoID)) {
-      return res.status(400).json({ error: "No such video found" });
+    if (!mongoose.Types.ObjectId.isValid(order.movieID)) {
+      return res.status(400).json({ error: "No such movie found" });
     }
-    const video = await Video.findById(order.videoID);
-    video.stock += order.quantity;
-    await video.save();
+    const movie = await Movie.findById(order.movieID);
+    movie.stock += order.quantity;
+    await movie.save();
     order.returnHandledModel = "Manager";
     order.returnHandledBy = _id;
   }
@@ -227,11 +227,11 @@ module.exports = {
   logInManager,
   getManager,
   updateManager,
-  getVideos,
-  getVideo,
-  addVideo,
-  updateVideo,
-  disableVideo,
+  getMovies,
+  getMovie,
+  addMovie,
+  updateMovie,
+  disableMovie,
   recruitStaff,
   deleteStaff,
   deleteCustomer,

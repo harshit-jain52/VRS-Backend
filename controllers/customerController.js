@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Customer = require("../models/customerModel");
 const Order = require("../models/orderModel");
-const Video = require("../models/videoModel");
+const Movie = require("../models/movieModel");
 const createToken = require("../helpers/createToken");
 
 // Sign Up Customer
@@ -101,32 +101,32 @@ const updateCustomer = async (req, res) => {
 // POST a new order
 const newOrder = async (req, res) => {
   const { _id } = req.user;
-  const { videoID, quantity, duration, transactionID } = req.body;
+  const { movieID, quantity, duration, transactionID } = req.body;
   try {
-    if (!mongoose.Types.ObjectId.isValid(videoID)) {
-      return res.status(400).json({ error: "No such video found" });
+    if (!mongoose.Types.ObjectId.isValid(movieID)) {
+      return res.status(400).json({ error: "No such movie found" });
     }
-    const video = await Video.findById(videoID);
-    if (!video) {
-      return res.status(400).json({ error: "No such video found" });
+    const movie = await Movie.findById(movieID);
+    if (!movie) {
+      return res.status(400).json({ error: "No such movie found" });
     }
 
     const customer = await Customer.findById(_id);
     const order = await Order.create({
-      videoID: videoID,
+      movieID: movieID,
       quantity: quantity,
       duration: duration,
       price:
         quantity *
-        (duration === 100 ? video.buy_price : video.rent_price * duration),
+        (duration === 100 ? movie.buy_price : movie.rent_price * duration),
       customerID: _id,
       transactionID: transactionID,
       status: duration === 100 ? "bought" : "rented",
     });
-    video.ordered.push(order._id);
-    video.stock -= quantity;
+    movie.ordered.push(order._id);
+    movie.stock -= quantity;
     customer.orders.push(order._id);
-    await video.save();
+    await movie.save();
     await customer.save();
     res.status(200).json(order);
   } catch (error) {
@@ -140,10 +140,10 @@ const getOrders = async (req, res) => {
   const customer = await Customer.findById(_id).populate({
     path: "orders",
     populate: {
-      path: "videoID",
+      path: "movieID",
       select: "-ordered -stock -createdAt -updatedAt -__v",
     },
-    select: "videoID quantity duration status price createdAt updatedAt",
+    select: "movieID quantity duration status price createdAt updatedAt",
   });
 
   res.status(200).json(customer.orders);
@@ -171,7 +171,7 @@ const updateCart = async (req, res) => {
 
   cart.forEach((item) => {
     if (!mongoose.Types.ObjectId.isValid(item.id)) {
-      return res.status(400).json({ error: "No such video found" });
+      return res.status(400).json({ error: "No such movie found" });
     }
   });
 

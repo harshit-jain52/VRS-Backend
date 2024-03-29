@@ -4,11 +4,11 @@ const {
   logInManager,
   getManager,
   updateManager,
-  getVideos,
-  getVideo,
-  addVideo,
-  updateVideo,
-  disableVideo,
+  getMovies,
+  getMovie,
+  addMovie,
+  updateMovie,
+  disableMovie,
   recruitStaff,
   deleteStaff,
   deleteCustomer,
@@ -29,11 +29,11 @@ router.put("/profile", updateManager);
 router.post("/createstaff", recruitStaff);
 router.delete("/deletestaff", deleteStaff);
 router.delete("/deletecustomer", deleteCustomer);
-router.get("/videos", getVideos);
-router.get("/video/:id", getVideo);
-router.post("/video", addVideo);
-router.put("/video/:id", updateVideo);
-router.put("/video/:id", disableVideo);
+router.get("/movies", getMovies);
+router.get("/movie/:id", getMovie);
+router.post("/movie", addMovie);
+router.put("/movie/:id", updateMovie);
+router.put("/movie/:id", disableMovie);
 router.get("/orders", getAllOrders);
 router.put("/orders/:id", changeOrderStatus);
 

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Staff = require("../models/staffModel");
 const Order = require("../models/orderModel");
-const Video = require("../models/videoModel");
+const Movie = require("../models/movieModel");
 const createToken = require("../helpers/createToken");
 
 // Log In Staff
@@ -57,7 +57,7 @@ const updateStaff = async (req, res) => {
 // GET all orders
 const getAllOrders = async (req, res) => {
   const orders = await Order.find({})
-    .populate("videoID")
+    .populate("movieID")
     .populate("customerID");
 
   res.status(200).json(orders);
@@ -77,12 +77,12 @@ const changeOrderStatus = async (req, res) => {
   }
 
   if (status === "returned") {
-    if (!mongoose.Types.ObjectId.isValid(order.videoID)) {
-      return res.status(400).json({ error: "No such video found" });
+    if (!mongoose.Types.ObjectId.isValid(order.movieID)) {
+      return res.status(400).json({ error: "No such movie found" });
     }
-    const video = await Video.findById(order.videoID);
-    video.stock += order.quantity;
-    await video.save();
+    const movie = await Movie.findById(order.movieID);
+    movie.stock += order.quantity;
+    await movie.save();
     order.returnHandledModel = "Staff";
     order.returnHandledBy = _id;
   }
@@ -93,44 +93,44 @@ const changeOrderStatus = async (req, res) => {
 };
 
 // Change Stock
-const changeVideoStock = async (req, res) => {
-  const { id: videoID } = req.params;
+const changeMovieStock = async (req, res) => {
+  const { id: movieID } = req.params;
   const { stock } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(videoID)) {
-    return res.status(400).json({ error: "No such video found" });
+  if (!mongoose.Types.ObjectId.isValid(movieID)) {
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  const video = await Video.findOneAndUpdate(
-    { _id: videoID },
+  const movie = await Movie.findOneAndUpdate(
+    { _id: movieID },
     { stock: stock }
   );
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
+  if (!movie) {
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  res.status(200).json(video);
+  res.status(200).json(movie);
 };
 
-// GET all videos
-const getVideos = async (req, res) => {
-  const videos = await Video.find({}).populate("ordered");
+// GET all movies
+const getMovies = async (req, res) => {
+  const movies = await Movie.find({}).populate("ordered");
 
-  res.status(200).json(videos);
+  res.status(200).json(movies);
 };
 
-// GET a video
-const getVideo = async (req, res) => {
+// GET a movie
+const getMovie = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such video found" });
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  const video = await Video.findById(id).populate("ordered");
-  if (!video) {
-    return res.status(400).json({ error: "No such video found" });
+  const movie = await Movie.findById(id).populate("ordered");
+  if (!movie) {
+    return res.status(400).json({ error: "No such movie found" });
   }
 
-  res.status(200).json(video);
+  res.status(200).json(movie);
 };
 
 module.exports = {
@@ -139,7 +139,7 @@ module.exports = {
   updateStaff,
   getAllOrders,
   changeOrderStatus,
-  changeVideoStock,
-  getVideos,
-  getVideo,
+  changeMovieStock,
+  getMovies,
+  getMovie,
 };

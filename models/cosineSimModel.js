@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const cosinesimSchema = new Schema({
-  videoID: {
+  movieID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Movie",
     required: true,

@@ -5,7 +5,7 @@ require("dotenv").config();
 const cors = require("cors");
 
 const customerRoutes = require("./routes/customers");
-const videoRoutes = require("./routes/videos");
+const movieRoutes = require("./routes/movies");
 const staffRoutes = require("./routes/staffs");
 const managerRoutes = require("./routes/managers");
 const paymentRoutes = require("./routes/payment");
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/customers", customerRoutes);
-app.use("/api/videos", videoRoutes);
+app.use("/api/movies", movieRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/managers", managerRoutes);
 app.use("/api/payment", paymentRoutes);
