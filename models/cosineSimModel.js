@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const cosineSimSchema = new Schema({
+const cosinesimSchema = new Schema({
   videoID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Video",
+    ref: "Movie",
     required: true,
   },
   Index: {
@@ -17,5 +17,5 @@ const cosineSimSchema = new Schema({
   },
 });
 
-const CosineSim = mongoose.model("CosineSim", cosineSimSchema);
-module.exports = CosineSim;
+const Cosinesim = mongoose.model("Cosinesim", cosinesimSchema);
+module.exports = Cosinesim;
