@@ -7,6 +7,8 @@ const {
   getAllOrders,
   changeOrderStatus,
   changeVideoStock,
+  getVideos,
+  getVideo,
 } = require("../controllers/staffController");
 const staffAuth = require("../middleware/staffAuth");
 
@@ -22,5 +24,7 @@ router.put("/profile", updateStaff);
 router.get("/orders", getAllOrders);
 router.put("/orders/:id", changeOrderStatus);
 router.put("/video/:id", changeVideoStock);
+router.get("/videos", getVideos);
+router.get("/video/:id", getVideo);
 
 module.exports = router;

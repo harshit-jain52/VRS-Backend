@@ -111,6 +111,28 @@ const changeVideoStock = async (req, res) => {
   res.status(200).json(video);
 };
 
+// GET all videos
+const getVideos = async (req, res) => {
+  const videos = await Video.find({}).populate("ordered");
+
+  res.status(200).json(videos);
+};
+
+// GET a video
+const getVideo = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  const video = await Video.findById(id).populate("ordered");
+  if (!video) {
+    return res.status(400).json({ error: "No such video found" });
+  }
+
+  res.status(200).json(video);
+};
+
 module.exports = {
   logInStaff,
   getStaff,
@@ -118,4 +140,6 @@ module.exports = {
   getAllOrders,
   changeOrderStatus,
   changeVideoStock,
+  getVideos,
+  getVideo,
 };
