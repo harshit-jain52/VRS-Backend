@@ -12,6 +12,8 @@ const {
   recruitStaff,
   deleteStaff,
   deleteCustomer,
+  getAllOrders,
+  changeOrderStatus,
 } = require("../controllers/managerController");
 const managerAuth = require("../middleware/managerAuth");
 
@@ -32,5 +34,7 @@ router.get("/video/:id", getVideo);
 router.post("/video", addVideo);
 router.put("/video/:id", updateVideo);
 router.put("/video/:id", disableVideo);
+router.get("/orders", getAllOrders);
+router.put("/orders/:id", changeOrderStatus);
 
 module.exports = router;

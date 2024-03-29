@@ -34,6 +34,16 @@ const orderSchema = new Schema(
       type: String,
       required: true,
     },
+    returnHandledModel: {
+      type: String,
+      enum: ["Staff", "Manager"],
+      default: null,
+    },
+    returnHandledBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: "returnHandledModel",
+      default: null,
+    },
   },
   { timestamps: true }
 );

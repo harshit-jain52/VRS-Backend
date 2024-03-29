@@ -65,6 +65,7 @@ const getAllOrders = async (req, res) => {
 
 // Change Order Status
 const changeOrderStatus = async (req, res) => {
+  const { _id } = req.user;
   const { id: orderID } = req.params;
   const { status } = req.body;
   if (!mongoose.Types.ObjectId.isValid(orderID)) {
@@ -82,6 +83,8 @@ const changeOrderStatus = async (req, res) => {
     const video = await Video.findById(order.videoID);
     video.stock += order.quantity;
     await video.save();
+    order.returnHandledModel = "Staff";
+    order.returnHandledBy = _id;
   }
   order.status = status;
   await order.save();

@@ -184,6 +184,45 @@ const updateVideo = async (req, res) => {
   res.status(200).json(video); // video before update
 };
 
+// GET all orders
+const getAllOrders = async (req, res) => {
+  const orders = await Order.find({})
+    .populate("videoID")
+    .populate("customerID")
+    .populate("returnHandledBy");
+
+  res.status(200).json(orders);
+};
+
+// Change Order Status
+const changeOrderStatus = async (req, res) => {
+  const { _id } = req.user;
+  const { id: orderID } = req.params;
+  const { status } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(orderID)) {
+    return res.status(400).json({ error: "No such order found" });
+  }
+  const order = await Order.findById(orderID);
+  if (!order) {
+    return res.status(400).json({ error: "No such order found" });
+  }
+
+  if (status === "returned") {
+    if (!mongoose.Types.ObjectId.isValid(order.videoID)) {
+      return res.status(400).json({ error: "No such video found" });
+    }
+    const video = await Video.findById(order.videoID);
+    video.stock += order.quantity;
+    await video.save();
+    order.returnHandledModel = "Manager";
+    order.returnHandledBy = _id;
+  }
+  order.status = status;
+  await order.save();
+
+  res.status(200).json(order);
+};
+
 module.exports = {
   logInManager,
   getManager,
@@ -196,4 +235,6 @@ module.exports = {
   recruitStaff,
   deleteStaff,
   deleteCustomer,
+  getAllOrders,
+  changeOrderStatus,
 };
