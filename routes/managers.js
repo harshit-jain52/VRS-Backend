@@ -32,8 +32,8 @@ router.delete("/deletecustomer", deleteCustomer);
 router.get("/movies", getMovies);
 router.get("/movie/:id", getMovie);
 router.post("/movie", addMovie);
+router.put("/movie/disable/:id", disableMovie);
 router.put("/movie/:id", updateMovie);
-router.put("/movie/:id", disableMovie);
 router.get("/orders", getAllOrders);
 router.put("/orders/:id", changeOrderStatus);
 

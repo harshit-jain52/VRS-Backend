@@ -13,7 +13,10 @@ const createMovie = async (req, res) => {
 
 // GET all movies
 const getMovies = async (req, res) => {
-  const movies = await Movie.find({});
+  const movies = await Movie.find(
+    {},
+    { ordered: 0, __v: 0, createdAt: 0, updatedAt: 0 }
+  );
 
   res.status(200).json(movies);
 };
@@ -21,7 +24,10 @@ const getMovies = async (req, res) => {
 // GET movies by genre
 const getMoviesByGenre = async (req, res) => {
   const { genre } = req.params;
-  const movies = await Movie.find({ genre: { $in: [genre] } });
+  const movies = await Movie.find(
+    { genre: { $in: [genre] } },
+    { ordered: 0, __v: 0, createdAt: 0, updatedAt: 0 }
+  );
 
   res.status(200).json(movies);
 };
@@ -33,7 +39,12 @@ const getMovie = async (req, res) => {
     return res.status(400).json({ error: "No such movie found" });
   }
 
-  const movie = await Movie.findById(id);
+  const movie = await Movie.findById(id, {
+    ordered: 0,
+    __v: 0,
+    createdAt: 0,
+    updatedAt: 0,
+  });
   if (!movie) {
     return res.status(400).json({ error: "No such movie found" });
   }
