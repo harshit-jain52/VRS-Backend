@@ -1,3 +1,4 @@
 node_modules
+pyenv
 *.env
 *.csv

@@ -1,5 +1,6 @@
 const Movie = require("../models/movieModel");
 const mongoose = require("mongoose");
+const axios = require("axios");
 
 // POST a new movie
 const createMovie = async (req, res) => {
@@ -52,9 +53,35 @@ const getMovie = async (req, res) => {
   res.status(200).json(movie);
 };
 
+// GET recommended movies
+const getRecommendedMovies = async (req, res) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/recommend/${req.params.title}`
+    );
+    const data = response.data;
+    // console.log(data.movies);
+    const movies = await Movie.find(
+      { name: { $in: data.movies } },
+      {
+        ordered: 0,
+        __v: 0,
+        createdAt: 0,
+        updatedAt: 0,
+      }
+    );
+    console.log(movies);
+    res.json(movies);
+  } catch (error) {
+    // console.log(error);
+    res.status(500).json({ error: "Error fetching data from Python API" });
+  }
+};
+
 module.exports = {
   createMovie,
   getMovies,
   getMoviesByGenre,
   getMovie,
+  getRecommendedMovies,
 };
