@@ -64,7 +64,7 @@ def recommend(title):
     for i in top_10_indices :   # to append the titles of top 10 similar movies to the recommended_movies list
         recommended_movies.append(list(df['Title'])[i])
 
-    return jsonify(recommended_movies)
+    return jsonify({"movies": recommended_movies})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000, debug=True)
