@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
+const axios = require("axios");
 
 const customerRoutes = require("./routes/customers");
 const movieRoutes = require("./routes/movies");
@@ -37,3 +38,16 @@ app.use("/api/movies", movieRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/managers", managerRoutes);
 app.use("/api/payment", paymentRoutes);
+
+app.get("/api/recommend/:title", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `http://127.0.0.1:5000/recommend/${req.params.title}`,
+    );
+    // console.log(response);
+    const data = response.data;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching data from Python API" });
+  }
+});
