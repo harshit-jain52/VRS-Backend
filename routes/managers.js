@@ -9,8 +9,10 @@ const {
   addMovie,
   updateMovie,
   disableMovie,
+  getStaffs,
   recruitStaff,
   deleteStaff,
+  getCustomers,
   deleteCustomer,
   getAllOrders,
   changeOrderStatus,
@@ -26,8 +28,10 @@ router.get("/auth", (req, res) => {
 });
 router.get("/profile", getManager);
 router.put("/profile", updateManager);
+router.get("/staffs", getStaffs);
 router.post("/createstaff", recruitStaff);
 router.delete("/deletestaff", deleteStaff);
+router.get("/customers", getCustomers);
 router.delete("/deletecustomer", deleteCustomer);
 router.get("/movies", getMovies);
 router.get("/movie/:id", getMovie);

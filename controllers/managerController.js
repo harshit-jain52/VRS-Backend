@@ -66,6 +66,13 @@ const getManager = async (req, res) => {
   res.status(200).json(manager);
 };
 
+// GET all staffs
+const getStaffs = async (req, res) => {
+  const staffs = await Staff.find({}, { password: 0 });
+
+  res.status(200).json(staffs);
+};
+
 // DELETE a staff
 const deleteStaff = async (req, res) => {
   const { staffID } = req.body;
@@ -79,6 +86,18 @@ const deleteStaff = async (req, res) => {
   }
 
   res.status(200).json(staff);
+};
+
+// GET all customers
+const getCustomers = async (req, res) => {
+  const customers = await Customer.find({}, { password: 0 }).populate({
+    path: "orders",
+    populate: {
+      path: "movieID",
+    },
+  });
+
+  res.status(200).json(customers);
 };
 
 // DELETE a customer
@@ -232,8 +251,10 @@ module.exports = {
   addMovie,
   updateMovie,
   disableMovie,
+  getStaffs,
   recruitStaff,
   deleteStaff,
+  getCustomers,
   deleteCustomer,
   getAllOrders,
   changeOrderStatus,
