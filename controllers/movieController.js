@@ -60,7 +60,6 @@ const getRecommendedMovies = async (req, res) => {
       `http://localhost:5000/recommend/${req.params.title}`
     );
     const data = response.data;
-    // console.log(data.movies);
     const movies = await Movie.find(
       { name: { $in: data.movies } },
       {
@@ -70,10 +69,8 @@ const getRecommendedMovies = async (req, res) => {
         updatedAt: 0,
       }
     );
-    console.log(movies);
     res.json(movies);
   } catch (error) {
-    // console.log(error);
     res.status(500).json({ error: "Error fetching data from Python API" });
   }
 };

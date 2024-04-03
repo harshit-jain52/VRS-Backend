@@ -9,6 +9,7 @@ const movieRoutes = require("./routes/movies");
 const staffRoutes = require("./routes/staffs");
 const managerRoutes = require("./routes/managers");
 const paymentRoutes = require("./routes/payment");
+const passwordRoutes = require("./routes/password");
 
 const app = express();
 
@@ -37,3 +38,4 @@ app.use("/api/movies", movieRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/managers", managerRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/password", passwordRoutes);
