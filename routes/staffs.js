@@ -9,6 +9,7 @@ const {
   changeMovieStock,
   getMovies,
   getMovie,
+  getNotifs,
 } = require("../controllers/staffController");
 const staffAuth = require("../middleware/staffAuth");
 
@@ -26,5 +27,6 @@ router.put("/orders/:id", changeOrderStatus);
 router.put("/movie/:id", changeMovieStock);
 router.get("/movies", getMovies);
 router.get("/movie/:id", getMovie);
+router.get("/notifs", getNotifs);
 
 module.exports = router;

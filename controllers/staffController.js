@@ -133,6 +133,28 @@ const getMovie = async (req, res) => {
   res.status(200).json(movie);
 };
 
+// GET notifications
+const getNotifs = async (req, res) => {
+  try {
+    const lowStockMovies = await Movie.find({ stock: { $lt: 3 } });
+
+    const currentDate = new Date();
+    const rentedOrders = await Order.find({ status: "rented" }).populate(
+      "movieID"
+    );
+
+    const pastDueOrders = rentedOrders.filter((order) => {
+      const dueDate = new Date(order.createdAt);
+      dueDate.setDate(dueDate.getDate() + order.duration * 7); // duration is in weeks
+      return dueDate < currentDate;
+    });
+
+    res.status(200).json({ lowStockMovies, pastDueOrders });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching data from the database" });
+  }
+};
+
 module.exports = {
   logInStaff,
   getStaff,
@@ -142,4 +164,5 @@ module.exports = {
   changeMovieStock,
   getMovies,
   getMovie,
+  getNotifs,
 };
