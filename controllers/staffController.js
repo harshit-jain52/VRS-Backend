@@ -139,9 +139,9 @@ const getNotifs = async (req, res) => {
     const lowStockMovies = await Movie.find({ stock: { $lt: 3 } });
 
     const currentDate = new Date();
-    const rentedOrders = await Order.find({ status: "rented" }).populate(
-      "movieID"
-    );
+    const rentedOrders = await Order.find({ status: "rented" })
+      .populate("movieID")
+      .populate("customerID");
 
     const pastDueOrders = rentedOrders.filter((order) => {
       const dueDate = new Date(order.createdAt);
