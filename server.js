@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
+const eventEmitter = new (require("events").EventEmitter)();
 
 const customerRoutes = require("./routes/customers");
 const movieRoutes = require("./routes/movies");
@@ -19,6 +20,7 @@ mongoose
   .then(() => {
     app.listen(process.env.PORT, () => {
       console.log("connected to db & listening to port", process.env.PORT);
+      eventEmitter.emit("appStarted");
     });
   })
   .catch((err) => console.log(err));
@@ -39,3 +41,5 @@ app.use("/api/staffs", staffRoutes);
 app.use("/api/managers", managerRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/password", passwordRoutes);
+
+module.exports = { app, eventEmitter };

@@ -37,7 +37,7 @@ const getMoviesByGenre = async (req, res) => {
 const getMovie = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such movie found" });
+    return res.status(404).json({ error: "No such movie found" });
   }
 
   const movie = await Movie.findById(id, {
@@ -47,7 +47,7 @@ const getMovie = async (req, res) => {
     updatedAt: 0,
   });
   if (!movie) {
-    return res.status(400).json({ error: "No such movie found" });
+    return res.status(404).json({ error: "No such movie found" });
   }
 
   res.status(200).json(movie);
