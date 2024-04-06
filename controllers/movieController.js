@@ -57,7 +57,7 @@ const getMovie = async (req, res) => {
 const getRecommendedMovies = async (req, res) => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/recommend/${req.params.title}`
+      `http://localhost:${process.env.PYTHON_PORT}/recommend/${req.params.title}`
     );
     const data = response.data;
     const movies = await Movie.find(
@@ -69,7 +69,7 @@ const getRecommendedMovies = async (req, res) => {
         updatedAt: 0,
       }
     );
-    res.json(movies);
+    res.status(200).json(movies);
   } catch (error) {
     res.status(500).json({ error: "Error fetching data from Python API" });
   }
