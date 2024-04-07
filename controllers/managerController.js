@@ -21,23 +21,16 @@ const logInManager = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(401).json({ error: error.message });
   }
 };
 
 // Sign Up Staff
 const recruitStaff = async (req, res) => {
-  const { username, password, name, email, phone, address } = req.body;
+  const { username, password, name, email, phone } = req.body;
 
   try {
-    const staff = await Staff.signUp(
-      username,
-      password,
-      name,
-      email,
-      phone,
-      address
-    );
+    const staff = await Staff.signUp(username, password, name, email, phone);
 
     // create token
     const token = createToken(staff._id);
@@ -183,7 +176,8 @@ const disableMovie = async (req, res) => {
     await customer.save();
   }
 
-  await Movie.findOneAndUpdate({ _id: id }, { disabled: true });
+  movie.disabled = true;
+  await movie.save();
   res.status(200).json(movie);
 };
 

@@ -4,7 +4,7 @@ import { app, eventEmitter } from "../server.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { config } from "dotenv";
-import Customer from "../models/customerModel.js";
+import testState from "./testState.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,6 +25,7 @@ describe("Customers", () => {
   };
 
   let token;
+  let transactionID;
 
   let cart = [
     {
@@ -33,11 +34,6 @@ describe("Customers", () => {
       duration: 1,
     },
   ];
-
-  after(async () => {
-    await Customer.deleteOne({ username: newCustomer.username });
-    console.log("Deleted test customer");
-  });
 
   describe("signup", () => {
     it("should return 201 and a token", (done) => {
@@ -182,6 +178,82 @@ describe("Customers", () => {
             order.should.have.property("createdAt");
             order.should.have.property("updatedAt");
           });
+        })
+        .end(done);
+    });
+
+    it("should return 200 and the transaction details", (done) => {
+      request
+        .post("/api/payment/checkout")
+        .set("Authorization", `Bearer ${token}`)
+        .send({ amount: 100 })
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("transaction");
+          res.body.should.have.property("payment");
+          res.body.transaction.should.have.property("customerID");
+          res.body.transaction.should.have.property("amount");
+          res.body.transaction.should.have.property("transactionID");
+          transactionID = res.body.transaction.transactionID;
+        })
+        .end(done);
+    });
+
+    it("should return 200 and the payment success message", (done) => {
+      request
+        .put("/api/payment/success")
+        .send({
+          razorpay_payment_id: "payment_id",
+          razorpay_order_id: transactionID,
+          razorpay_signature: "signature",
+        })
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("message", "Payment successful");
+        })
+        .end(done);
+    });
+
+    it("should return 400 and an error message for invalid transaction", (done) => {
+      request
+        .put("/api/payment/success")
+        .send({
+          razorpay_payment_id: "payment_id",
+          razorpay_order_id: "invalid_id",
+          razorpay_signature: "signature",
+        })
+        .expect(400)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("message", "Invalid transaction");
+        })
+        .end(done);
+    });
+
+    it("should return 200 and the new order", (done) => {
+      request
+        .post("/api/customers/order")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          movieID: process.env.TEST_MOVIE_ID,
+          quantity: 1,
+          duration: 1,
+          transactionID: transactionID,
+        })
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("customerID");
+          res.body.should.have.property("movieID");
+          res.body.should.have.property("quantity");
+          res.body.should.have.property("duration");
+          res.body.should.have.property("status");
+          res.body.should.have.property("price");
+          res.body.should.have.property("transactionID");
+          res.body.should.have.property("_id");
+          testState.orderID = res.body._id;
         })
         .end(done);
     });

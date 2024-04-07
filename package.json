@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha -r esm tests/movies.test.mjs tests/customers.test.mjs"
+    "test": "mocha -r esm tests/movies.test.mjs tests/customers.test.mjs tests/management.test.mjs --exit"
   },
   "author": "",
   "license": "ISC",
