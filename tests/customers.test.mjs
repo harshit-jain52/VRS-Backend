@@ -26,6 +26,14 @@ describe("Customers", () => {
 
   let token;
 
+  let cart = [
+    {
+      id: process.env.TEST_MOVIE_ID,
+      quantity: 1,
+      duration: 1,
+    },
+  ];
+
   after(async () => {
     await Customer.deleteOne({ username: newCustomer.username });
     console.log("Deleted test customer");
@@ -100,6 +108,80 @@ describe("Customers", () => {
         .expect("Content-Type", /json/)
         .expect((res) => {
           res.body.should.have.property("message", "Authorized");
+        })
+        .end(done);
+    });
+  });
+
+  describe("profile", () => {
+    it("should return 200 and the customer profile", (done) => {
+      request
+        .get("/api/customers/profile")
+        .set("Authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("username", newCustomer.username);
+          res.body.should.have.property("name", newCustomer.name);
+          res.body.should.have.property("email", newCustomer.email);
+          res.body.should.have.property("phone", newCustomer.phone);
+          res.body.should.have.property("address", newCustomer.address);
+        })
+        .end(done);
+    });
+  });
+
+  describe("cart", () => {
+    it("should return 200 and the customer's cart", (done) => {
+      request
+        .get("/api/customers/cart")
+        .set("Authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.be.an("array");
+        })
+        .end(done);
+    });
+
+    it("should return 200 and the updated cart", function (done) {
+      this.timeout(10000);
+      request
+        .put("/api/customers/cart")
+        .set("Authorization", `Bearer ${token}`)
+        .send({ cart: cart })
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.be.an("array");
+          res.body.forEach((item, index) => {
+            item.should.have.property("id", cart[index].id);
+            item.should.have.property("quantity", cart[index].quantity);
+            item.should.have.property("duration", cart[index].duration);
+          });
+        })
+        .end(done);
+    });
+  });
+
+  describe("orders", () => {
+    it("should return 200 and the customer's orders", (done) => {
+      request
+        .get("/api/customers/order")
+        .set("Authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.be.an("array");
+          res.body.forEach((order) => {
+            order.should.have.property("movieID");
+            order.should.have.property("quantity");
+            order.should.have.property("duration");
+            order.should.have.property("status");
+            order.should.have.property("price");
+            order.should.have.property("createdAt");
+            order.should.have.property("updatedAt");
+          });
         })
         .end(done);
     });
