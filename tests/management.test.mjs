@@ -412,13 +412,30 @@ describe("Management", () => {
     });
 
     describe("change stock", () => {
-      it("should return 200 and the update movie", (done) => {
+      it("should return 200 and the updated movie", (done) => {
         request
           .put(`/api/staffs/movie/${process.env.TEST_MOVIE_ID}`)
           .set("Authorization", `Bearer ${staffToken}`)
           .send({ stock: 100 })
           .expect(200)
           .expect("Content-Type", /json/)
+          .end(done);
+      });
+    });
+
+    describe("notifications", () => {
+      it("should return 200 and relevant notifications", (done) => {
+        request
+          .get("/api/staffs/notifs")
+          .set("Authorization", `Bearer ${staffToken}`)
+          .expect(200)
+          .expect("Content-Type", /json/)
+          .expect((res) => {
+            res.body.should.have.property("lowStockMovies");
+            res.body.should.have.property("pastDueOrders");
+            res.body.lowStockMovies.should.be.a("array");
+            res.body.pastDueOrders.should.be.a("array");
+          })
           .end(done);
       });
     });
