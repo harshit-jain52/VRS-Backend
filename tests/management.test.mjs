@@ -8,6 +8,7 @@ import Staff from "../models/staffModel.js";
 import Customer from "../models/customerModel.js";
 import testState from "./testState.mjs";
 import Order from "../models/orderModel.js";
+import Movie from "../models/movieModel.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,12 +23,15 @@ describe("Management", () => {
   let staffToken;
 
   after(async () => {
+    console.log("Cleaning up test data");
     await Staff.deleteOne({ username: process.env.TEST_STAFF_USERNAME });
     console.log("Deleted test staff");
     await Customer.deleteOne({ username: process.env.TEST_CUSTOMER_USERNAME });
     console.log("Deleted test customer");
     await Order.deleteOne({ _id: testState.orderID });
     console.log("Deleted test order");
+    await Movie.deleteOne({ name: process.env.TEST_NEW_MOVIE_NAME });
+    console.log("Deleted test movie");
   });
 
   describe("Manager", () => {
@@ -253,6 +257,52 @@ describe("Management", () => {
           })
           .expect(200)
           .expect("Content-Type", /json/)
+          .end(done);
+      });
+
+      it("should return 200 and the added movie", (done) => {
+        request
+          .post("/api/managers/movie")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            name: process.env.TEST_NEW_MOVIE_NAME,
+            poster_url: "https://example.com",
+            year: "2021",
+            runtime: "1h 30m",
+            genre: ["Action", "Adventure"],
+            rating: 5,
+            summary_text: "A test movie",
+            ImdbId: "tt1234567",
+            cast: ["Test Actor"],
+            director: "Test Director",
+            stock: 100,
+            buy_price: 10,
+            rent_price: 5,
+          })
+          .expect(200)
+          .expect("Content-Type", /json/)
+          .expect((res) => {
+            res.body.should.have.property(
+              "name",
+              process.env.TEST_NEW_MOVIE_NAME
+            );
+            res.body.should.have.property("poster_url", "https://example.com");
+            res.body.should.have.property("year", "2021");
+            res.body.should.have.property("runtime", "1h 30m");
+            res.body.should.have.property("genre");
+            res.body.genre.should.be.a("array");
+            res.body.genre.every((genre) => genre.should.be.a("string"));
+            res.body.should.have.property("rating", 5);
+            res.body.should.have.property("summary_text", "A test movie");
+            res.body.should.have.property("ImdbId", "tt1234567");
+            res.body.should.have.property("cast");
+            res.body.cast.should.be.a("array");
+            res.body.cast.every((cast) => cast.should.be.a("string"));
+            res.body.should.have.property("director", "Test Director");
+            res.body.should.have.property("stock", 100);
+            res.body.should.have.property("buy_price", 10);
+            res.body.should.have.property("rent_price", 5);
+          })
           .end(done);
       });
     });

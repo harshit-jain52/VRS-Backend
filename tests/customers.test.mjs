@@ -63,6 +63,18 @@ describe("Customers", () => {
   });
 
   describe("login", () => {
+    it("should send a reset password mail to the customer", (done) => {
+      request
+        .post("/api/password/forgot")
+        .send({ email: newCustomer.email })
+        .expect(200)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("message", "Email Sent");
+        })
+        .end(done);
+    });
+
     it("should return 200 and a token", (done) => {
       request
         .post("/api/customers/login")

@@ -7,13 +7,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 import string
 from tqdm import tqdm
-
+from dotenv import load_dotenv
+import os
 import nltk
 
 nltk.download("stopwords")
 nltk.download("punkt")
 
 app = Flask(__name__)
+load_dotenv()
 
 
 @app.route("/recommend/<string:title>", methods=["GET"])
@@ -90,4 +92,4 @@ def recommend(title):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PYTHON_PORT")), debug=True)

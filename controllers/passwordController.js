@@ -6,7 +6,6 @@ const Customer = require("../models/customerModel");
 const forgotPassword = async (req, res) => {
   try {
     const user = await Customer.findOne({ email: req.body.email });
-    console.log(req);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

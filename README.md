@@ -24,6 +24,6 @@ https://data.world/studentoflife/imdb-top-250-lists-and-5000-or-so-data-records?
 
 - `pip freeze > pymodules.txt`
 
-### Exit the environment:
+#### Exit the environment:
 
 - `deactivate`
