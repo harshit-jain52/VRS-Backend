@@ -79,6 +79,18 @@ describe("Management", () => {
           })
           .end(done);
       });
+
+      it("should return 401 for unauthorized user", (done) => {
+        request
+          .get("/api/managers/auth")
+          .set("Authorization", `Bearer invalid_token`) // Set an invalid token in the Authorization header
+          .expect(401)
+          .expect("Content-Type", /json/)
+          .expect((res) => {
+            res.body.should.have.property("error", "Request is not authorized");
+          })
+          .end(done);
+      });
     });
 
     describe("manage staffs", () => {
@@ -315,6 +327,18 @@ describe("Management", () => {
           .expect("Content-Type", /json/)
           .expect((res) => {
             res.body.should.have.property("message", "Authorized");
+          })
+          .end(done);
+      });
+
+      it("should return 401 for unauthorized user", (done) => {
+        request
+          .get("/api/staffs/auth")
+          .set("Authorization", `Bearer invalid_token`) // Set an invalid token in the Authorization header
+          .expect(401)
+          .expect("Content-Type", /json/)
+          .expect((res) => {
+            res.body.should.have.property("error", "Request is not authorized");
           })
           .end(done);
       });

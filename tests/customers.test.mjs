@@ -107,6 +107,18 @@ describe("Customers", () => {
         })
         .end(done);
     });
+
+    it("should return 401 for unauthorized user", (done) => {
+      request
+        .get("/api/customers/auth")
+        .set("Authorization", `Bearer invalid_token`) // Set an invalid token in the Authorization header
+        .expect(401)
+        .expect("Content-Type", /json/)
+        .expect((res) => {
+          res.body.should.have.property("error", "Request is not authorized");
+        })
+        .end(done);
+    });
   });
 
   describe("profile", () => {
