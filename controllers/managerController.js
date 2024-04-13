@@ -5,6 +5,8 @@ const Staff = require("../models/staffModel");
 const Customer = require("../models/customerModel");
 const Order = require("../models/orderModel");
 const createToken = require("../helpers/createToken");
+const fs = require("fs");
+const path = require("path");
 
 // Log In Manager
 const logInManager = async (req, res) => {
@@ -150,7 +152,21 @@ const getMovie = async (req, res) => {
 // Add a movie
 const addMovie = async (req, res) => {
   try {
-    const movie = await Movie.create({ ...req.body });
+    // append to the csv file ../movies.csv
+    // const movie = await Movie.create({ ...req.body });
+
+    const csvFilePath = path.join(__dirname, "..", "movies.csv");
+    // const csvData = `${req.body.title},${req.body.releaseYear},${req.body.rated},${req.body.released},${req.body.runtime},${req.body.genre},${req.body.director},${req.body.writer},${req.body.actors},${req.body.plot},${req.body.language},${req.body.country},${req.body.awards},${req.body.poster},${req.body.ratings.source},${req.body.ratings.value},${req.body.metascore},${req.body.imdbRating},${req.body.imdbVotes},${req.body.imdbID},${req.body.type},${req.body.dvd},${req.body.boxOffice},${req.body.production},${req.body.website},${req.body.response},${req.body.tomatoURL}\n`;
+
+    console.log(req.body);
+
+    // fs.appendFile(csvFilePath, csvData, (err) => {
+    //   if (err) {
+    //     throw err;
+    //   }
+    //   console.log("Data appended to movies.csv");
+    // });
+
     res.status(200).json(movie);
   } catch (error) {
     res.status(400).json({ error: error.message });
