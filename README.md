@@ -1,4 +1,4 @@
-# Video Rental Syatem (VRS) Backend
+# Video Rental System (VRS) Backend
 
 ## Getting Started
 
@@ -90,4 +90,4 @@ For the frontend code, please refer to the [VRS Frontend repository](https://git
 
 ## Movies Data
 
-https://data.world/studentoflife/imdb-top-250-lists-and-5000-or-so-data-records?ref=hackernoon.com > take IMDBdata_MainData.csv
+https://data.world/studentoflife/imdb-top-250-lists-and-5000-or-so-data-records?ref=hackernoon.com > take _IMDBdata_MainData.csv_
